@@ -8,6 +8,11 @@ All notable changes to this project are documented here. The format is based on
 
 ### Added
 
+- **Fuzzy clustering** (`fuzzytool.cluster`):
+  - `fuzzy_cmeans` (Bezdek FCM), `gustafson_kessel` (adaptive Mahalanobis norm),
+    `possibilistic_cmeans` (typicalities); all seeded for reproducibility.
+  - Validity metrics: `partition_coefficient`, `partition_entropy`, `xie_beni`.
+  - `viz.plot_clusters` and `datasets.make_blobs`.
 - **Interval type-2 (IT2)** support (`fuzzytool.type2`):
   - IT2 membership functions with a footprint of uncertainty: `it2` (explicit
     LMF/UMF), `it2_scale` (height), `it2_gauss_uncertain_mean`,

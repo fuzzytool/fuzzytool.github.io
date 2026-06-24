@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import numpy as np
+
 from . import membership as mf
 from .inference import Mamdani
 from .sets import Variable
@@ -79,4 +81,24 @@ def credit_risk_it2() -> tuple[IT2Mamdani, Variable, Variable, Variable]:
     return sys, score, dti, premium
 
 
-__all__ = ["credit_risk", "credit_risk_it2"]
+def make_blobs(
+    centers=((0.0, 0.0), (6.0, 6.0), (0.0, 6.0)),
+    n_per: int = 60,
+    spread: float = 0.7,
+    seed: int | None = 0,
+) -> np.ndarray:
+    """Synthetic isotropic Gaussian blobs for clustering demos and tests.
+
+    Returns the stacked data ``X`` of shape ``(len(centers) * n_per, n_features)``.
+
+    >>> X = make_blobs(seed=0)
+    >>> X.shape
+    (180, 2)
+    """
+    rng = np.random.default_rng(seed)
+    centers = np.asarray(centers, dtype=float)
+    blobs = [rng.normal(c, spread, size=(n_per, centers.shape[1])) for c in centers]
+    return np.vstack(blobs)
+
+
+__all__ = ["credit_risk", "credit_risk_it2", "make_blobs"]

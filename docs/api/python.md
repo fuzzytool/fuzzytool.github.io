@@ -42,6 +42,10 @@ Generated from docstrings with `mkdocstrings`.
 
 ::: fuzzytool.type2.reduction
 
+## Fuzzy clustering
+
+::: fuzzytool.cluster
+
 ## Visualization
 
 ::: fuzzytool.viz

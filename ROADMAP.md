@@ -27,12 +27,13 @@ self-contained, testable increment.
 - [x] Karnik-Mendel type reduction (`km_endpoint`, `karnik_mendel`,
       `centroid_it2`) + FOU visualization.
 
-## ⏳ Phase 4 — Fuzzy clustering
+## ✅ Phase 4 — Fuzzy clustering
 
-- [ ] Fuzzy c-means (FCM).
-- [ ] Gustafson-Kessel.
-- [ ] Possibilistic c-means.
-- [ ] Cluster-quality metrics (partition coefficient, Xie-Beni).
+- [x] Fuzzy c-means (FCM).
+- [x] Gustafson-Kessel.
+- [x] Possibilistic c-means.
+- [x] Cluster-quality metrics (partition coefficient, partition entropy,
+      Xie-Beni) + 2-D cluster visualization and a synthetic-blob generator.
 
 ## ⏳ Phase 5 — ANFIS + F-transform
 

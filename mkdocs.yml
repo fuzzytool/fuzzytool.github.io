@@ -40,6 +40,7 @@ nav:
       - Mamdani inference: guide/mamdani.md
       - Takagi-Sugeno (TSK): guide/tsk.md
       - Interval type-2 (IT2): guide/type2.md
+      - Fuzzy clustering: guide/clustering.md
       - Defuzzification: guide/defuzzification.md
       - Visualization: guide/visualization.md
   - Extending: extending.md

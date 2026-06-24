@@ -94,4 +94,25 @@ def control_surface(system, x_var: Variable, y_var: Variable,
     return ax
 
 
-__all__ = ["plot_variable", "plot_it2_variable", "control_surface"]
+def plot_clusters(X, result, ax=None):
+    """Scatter 2-D data colored by hard label, with cluster centers marked.
+
+    ``result`` is a :class:`~fuzzytool.cluster.ClusterResult`. Point opacity
+    encodes the top membership, so fuzzy/boundary points appear fainter.
+    """
+    plt = _require_mpl()
+    X = np.asarray(X, dtype=float)
+    if X.shape[1] != 2:
+        raise ValueError("plot_clusters needs 2-D data")
+    if ax is None:
+        _, ax = plt.subplots(figsize=(5, 5))
+    top = result.u.max(axis=0)
+    ax.scatter(X[:, 0], X[:, 1], c=result.labels, cmap="tab10",
+               alpha=np.clip(top, 0.25, 1.0), s=25)
+    ax.scatter(result.centers[:, 0], result.centers[:, 1],
+               marker="X", c="black", s=160, edgecolors="white", zorder=3)
+    ax.set_title("fuzzy clusters")
+    return ax
+
+
+__all__ = ["plot_variable", "plot_it2_variable", "control_surface", "plot_clusters"]
