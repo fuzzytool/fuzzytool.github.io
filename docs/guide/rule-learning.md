@@ -1,4 +1,4 @@
-# Rule learning & Tsukamoto
+# Rule learning
 
 ## Learning a rule base from data (Wang-Mendel)
 
