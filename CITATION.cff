@@ -7,6 +7,7 @@ authors:
     given-names: Jose L.
 version: 0.1.0
 date-released: 2026-06-24
+doi: 10.5281/zenodo.20836712
 license: MIT
 repository-code: "https://github.com/fuzzytool/fuzzytool.github.io"
 url: "https://fuzzytool.github.io"

@@ -4,6 +4,7 @@
   <a href="https://fuzzytool.github.io/"><img src="https://img.shields.io/badge/docs-fuzzytool.github.io-3f51b5" alt="Docs"></a>
   <img src="https://img.shields.io/pypi/pyversions/fuzzytool?logo=python&logoColor=white" alt="Python versions">
   <img src="https://img.shields.io/badge/license-MIT-blue" alt="License: MIT">
+  <a href="https://doi.org/10.5281/zenodo.20836712"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.20836712.svg" alt="DOI"></a>
 </p>
 
 # fuzzytool

@@ -2,9 +2,10 @@
 
 ## Citing
 
-If you use fuzzytool in academic work, please cite it. Repository metadata lives
-in [`CITATION.cff`](https://github.com/fuzzytool/fuzzytool.github.io/blob/main/CITATION.cff);
-once a release is archived on Zenodo, cite the versioned DOI it mints.
+If you use fuzzytool in academic work, please cite it. The archival DOI (all
+versions) is [10.5281/zenodo.20836712](https://doi.org/10.5281/zenodo.20836712);
+each release also mints its own versioned DOI. Repository citation metadata lives
+in [`CITATION.cff`](https://github.com/fuzzytool/fuzzytool.github.io/blob/main/CITATION.cff).
 
 ## Releasing (maintainers)
 
