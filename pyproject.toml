@@ -1,0 +1,51 @@
+# Pure-Python package built with Hatchling.
+# Develop:  pip install -e ".[dev,viz,docs]"
+# Build:    python -m build   (wheel + sdist in dist/)
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "fuzzytool"
+version = "0.1.0"
+description = "A clean, extensible fuzzy-logic toolkit in pure Python + NumPy"
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+authors = [{ name = "Jose L. Salmeron" }]
+keywords = ["fuzzy logic", "fuzzy inference", "mamdani", "takagi-sugeno", "type-2", "anfis"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Topic :: Scientific/Engineering :: Mathematics",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+dependencies = ["numpy>=1.21"]
+
+[project.optional-dependencies]
+viz = ["matplotlib>=3.4"]
+dev = ["pytest>=7", "pytest-cov", "ruff"]
+docs = ["mkdocs-material", "mkdocstrings[python]"]
+
+[project.urls]
+Homepage = "https://fuzzytool.github.io"
+Documentation = "https://fuzzytool.github.io"
+Repository = "https://github.com/fuzzytool/fuzzytool.github.io"
+Issues = "https://github.com/fuzzytool/fuzzytool.github.io/issues"
+
+[tool.hatch.build.targets.wheel]
+packages = ["fuzzytool"]
+
+[tool.pytest.ini_options]
+addopts = "--doctest-modules --doctest-glob='*.md'"
+testpaths = ["tests", "fuzzytool"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py39"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
