@@ -30,6 +30,26 @@ Generated from docstrings with `mkdocstrings`.
 
 ::: fuzzytool.inference.tsk
 
+## Inference — Tsukamoto
+
+::: fuzzytool.inference.tsukamoto
+
+## Rule learning (Wang-Mendel)
+
+::: fuzzytool.learn
+
+## Fuzzy numbers
+
+::: fuzzytool.fuzzynum
+
+## Fuzzy MCDM
+
+::: fuzzytool.mcdm
+
+## Serialization
+
+::: fuzzytool.serialize
+
 ## Interval type-2 — sets
 
 ::: fuzzytool.type2.sets

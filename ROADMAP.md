@@ -42,7 +42,22 @@ self-contained, testable increment.
 - [x] F-transform: direct and inverse over a triangular fuzzy partition
       (partition of unity), with smoothing/denoising.
 
-## ⏳ Phase 6 — Release
+## ✅ v0.2.0 — Decision-making, rule learning, engineering
+
+- [x] Fuzzy numbers (triangular/trapezoidal) + arithmetic; fuzzy MCDM
+      (`fuzzy_topsis`, `fuzzy_ahp`).
+- [x] Rule learning from data (`wang_mendel`); Tsukamoto inference with
+      invertible ramp/sigmoid MFs.
+- [x] Vectorized batch inference (`Mamdani.predict` / `TSK.predict`);
+      JSON serialization (`save`/`load`); scikit-learn estimator interface on ANFIS.
+
+## Ideas for later
+
+- Fuzzy cognitive maps (+ grey FCM).
+- General (non-interval) type-2; more defuzzifiers.
+- FIS tuning via metaheuristics (e.g. PSO).
+
+## ⏳ Phase 6 — Release (v0.1.0)
 
 - [x] Example notebooks (`notebooks/`) and a comparison page vs scikit-fuzzy.
 - [x] JOSS `paper.md`; Zenodo metadata (`.zenodo.json`) and a citing/releasing page.

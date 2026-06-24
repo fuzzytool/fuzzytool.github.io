@@ -134,6 +134,19 @@ class ANFIS:
         *_, wn, _ = self._firing(X)
         return self._outputs(X, wn)[1]
 
+    # --- scikit-learn estimator interface ---------------------------------
+
+    def get_params(self, deep: bool = True) -> dict:
+        """Hyperparameters, for scikit-learn compatibility (Pipeline/GridSearch)."""
+        return {"n_inputs": self.p, "n_mf": self.n_mf, "learning_rate": self.lr}
+
+    def set_params(self, **params) -> ANFIS:
+        """Set hyperparameters (resets trained state), returning ``self``."""
+        merged = self.get_params()
+        merged.update(params)
+        self.__init__(**merged)
+        return self
+
     def __repr__(self) -> str:
         return f"ANFIS(n_inputs={self.p}, n_mf={self.n_mf}, rules={self.R})"
 

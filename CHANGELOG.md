@@ -6,12 +6,43 @@ All notable changes to this project are documented here. The format is based on
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-06-24
+
 ### Added
 
+- **Fuzzy numbers & MCDM**: `fuzzytool.fuzzynum` (triangular/trapezoidal numbers
+  with arithmetic, alpha-cuts, centroid, distance, ranking) and `fuzzytool.mcdm`
+  (`fuzzy_topsis`, `fuzzy_ahp`).
+- **Rule learning**: `wang_mendel` generates a Mamdani rule base from data.
+- **Tsukamoto** inference (`fuzzytool.inference.Tsukamoto`) with monotonic
+  consequents; added invertible `ramp_up` / `ramp_down` membership functions and
+  an `inverse` on `sigmoid`.
+- **Batch inference**: `Mamdani.predict` / `TSK.predict` evaluate array-valued
+  inputs in a vectorized pass.
+- **Serialization**: `fz.save` / `fz.load` (JSON) for Mamdani/TSK systems, plus
+  `to_dict`/`from_dict` on membership functions and variables.
+- **scikit-learn compatibility**: `ANFIS.get_params` / `set_params`.
+
+## [0.1.0] - 2026-06-24
+
+### Added
+
+- Core membership functions: triangular, trapezoidal, gaussian, generalized
+  bell, sigmoid (`fuzzytool.membership`).
+- T-norms and s-norms (min/prod/Łukasiewicz, max/probor/Łukasiewicz), resolved
+  by name (`fuzzytool.norms`).
+- `Variable` (linguistic variable) with auto-generated or explicit terms, and an
+  operator-based rule-antecedent expression tree (`&`, `|`, `~`).
+- **Mamdani** inference with configurable implication/aggregation and
+  defuzzification (centroid, bisector, MOM/SOM/LOM).
+- **Takagi-Sugeno (TSK)** inference (zero- and first-order, plus callable
+  consequents).
+- `fuzzytool.viz`: membership-function plots and 2-input control surfaces.
+- `fuzzytool.datasets.credit_risk`: the flagship example system.
 - Example notebooks (`notebooks/`): quickstart, interval type-2, clustering, and
   ANFIS/F-transform — committed executed.
-- Documentation: a comparison page vs scikit-fuzzy and a citing/releasing page;
-  `.zenodo.json` for DOI archival; `notebooks` optional dependency group.
+- Documentation (MkDocs Material), CI, a comparison page vs scikit-fuzzy, a
+  citing/releasing page, and `.zenodo.json` for DOI archival.
 - **ANFIS** (`fuzzytool.anfis.ANFIS`): a trainable first-order Sugeno system over
   a grid partition, fit with Jang's hybrid scheme (least-squares consequents +
   gradient-descent premises). `fit` / `predict` / `history_`.
@@ -32,21 +63,4 @@ All notable changes to this project are documented here. The format is based on
   - `IT2Mamdani` (center-of-sets type reduction) and `IT2TSK` engines.
   - Karnik-Mendel type reduction: `km_endpoint`, `karnik_mendel`, `centroid_it2`.
   - `viz.plot_it2_variable` (shaded FOU); `datasets.credit_risk_it2`.
-
-## [0.1.0] - 2026-06-24
-
-### Added
-
-- Core membership functions: triangular, trapezoidal, gaussian, generalized
-  bell, sigmoid (`fuzzytool.membership`).
-- T-norms and s-norms (min/prod/Łukasiewicz, max/probor/Łukasiewicz), resolved
-  by name (`fuzzytool.norms`).
-- `Variable` (linguistic variable) with auto-generated or explicit terms, and an
-  operator-based rule-antecedent expression tree (`&`, `|`, `~`).
-- **Mamdani** inference with configurable implication/aggregation and
-  defuzzification (centroid, bisector, MOM/SOM/LOM).
-- **Takagi-Sugeno (TSK)** inference (zero- and first-order, plus callable
-  consequents).
-- `fuzzytool.viz`: membership-function plots and 2-input control surfaces.
-- `fuzzytool.datasets.tipper`: the classic example system.
-- Test suite, MkDocs Material documentation, and CI.
+- Test suite covering every module.

@@ -54,7 +54,16 @@ s-norm, `~` the complement.
 | 3 | **Type-2 / interval type-2** sets (footprint of uncertainty) + Karnik-Mendel type reduction | ✅ |
 | 4 | **Fuzzy clustering**: fuzzy c-means, Gustafson-Kessel, possibilistic | ✅ |
 | 5 | **ANFIS** (trainable TSK) + **F-transform** (direct/inverse) | ✅ |
-| 6 | Notebooks, JOSS `paper.md`, Zenodo DOI, PyPI release | ⏳ |
+| 6 | Notebooks, JOSS `paper.md`, Zenodo DOI, PyPI release | ✅ |
+
+### v0.2.0
+
+- **Fuzzy numbers & MCDM:** triangular/trapezoidal fuzzy-number arithmetic,
+  **Fuzzy TOPSIS** and **Fuzzy AHP**.
+- **Rule learning:** **Wang-Mendel** rule-base generation from data; **Tsukamoto**
+  inference (monotonic consequents).
+- **Engineering:** vectorized **batch inference** (`predict`), JSON
+  **save/load**, and a **scikit-learn** estimator interface for ANFIS.
 
 See [`ROADMAP.md`](ROADMAP.md).
 

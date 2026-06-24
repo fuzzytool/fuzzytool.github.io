@@ -15,6 +15,8 @@ from collections.abc import Mapping
 from numbers import Real
 from typing import Callable
 
+import numpy as np
+
 from ..norms import get_snorm, get_tnorm
 from ..rules import Rule
 from ..sets import Antecedent
@@ -47,6 +49,7 @@ class TSK:
         self.snorm = get_snorm(snorm)
         self.rules: list[Rule] = []
         self._fns: list[Callable[..., float]] = []
+        self._spec = {"tnorm": tnorm, "snorm": snorm}
 
     def rule(self, antecedent: Antecedent, consequent, weight: float = 1.0) -> TSK:
         """Add ``IF antecedent THEN output = consequent`` and return ``self``."""
@@ -69,6 +72,24 @@ class TSK:
         if den == 0.0:
             raise ValueError("no rule fired for the given inputs")
         return num / den
+
+    def predict(self, **inputs) -> np.ndarray:
+        """Vectorized inference over array-valued inputs (``n`` per keyword).
+
+        Returns an array of length ``n`` (``nan`` for samples where no rule fired).
+        """
+        if not self.rules:
+            raise RuntimeError("no rules defined")
+        arrs = {k: np.asarray(v, dtype=float) for k, v in inputs.items()}
+        n = len(next(iter(arrs.values())))
+        num = np.zeros(n)
+        den = np.zeros(n)
+        for r, fn in zip(self.rules, self._fns):
+            w = np.asarray(r.antecedent.eval(arrs, self.tnorm, self.snorm),
+                           dtype=float) * r.weight
+            num = num + w * np.asarray(fn(**arrs), dtype=float)
+            den = den + w
+        return np.divide(num, den, out=np.full(n, np.nan), where=den != 0)
 
     def __repr__(self) -> str:
         return f"TSK(rules={len(self.rules)})"

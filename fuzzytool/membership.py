@@ -102,17 +102,62 @@ class GeneralizedBell:
 
 
 class Sigmoid:
-    """Sigmoidal MF: ``1 / (1 + exp(-a (x - c)))``."""
+    """Sigmoidal MF: ``1 / (1 + exp(-a (x - c)))``. Monotonic (invertible)."""
 
     def __init__(self, a: float, c: float) -> None:
+        if a == 0:
+            raise ValueError("sigmoid requires a != 0 to be invertible")
         self.a, self.c = float(a), float(c)
 
     def __call__(self, x):
         x = np.asarray(x, dtype=float)
         return 1.0 / (1.0 + np.exp(-self.a * (x - self.c)))
 
+    def inverse(self, y: float) -> float:
+        """The ``x`` at which membership equals ``y`` (for Tsukamoto inference)."""
+        y = min(max(float(y), 1e-9), 1 - 1e-9)
+        return self.c + np.log(y / (1.0 - y)) / self.a
+
     def __repr__(self) -> str:
         return f"sigmoid({self.a}, {self.c})"
+
+
+class RampUp:
+    """Monotonically increasing ramp: 0 below ``a``, 1 above ``b``."""
+
+    def __init__(self, a: float, b: float) -> None:
+        if a >= b:
+            raise ValueError(f"ramp_up requires a < b, got {(a, b)}")
+        self.a, self.b = float(a), float(b)
+
+    def __call__(self, x):
+        x = np.asarray(x, dtype=float)
+        return np.clip((x - self.a) / (self.b - self.a), 0.0, 1.0)
+
+    def inverse(self, y: float) -> float:
+        return self.a + float(y) * (self.b - self.a)
+
+    def __repr__(self) -> str:
+        return f"ramp_up({self.a}, {self.b})"
+
+
+class RampDown:
+    """Monotonically decreasing ramp: 1 below ``a``, 0 above ``b``."""
+
+    def __init__(self, a: float, b: float) -> None:
+        if a >= b:
+            raise ValueError(f"ramp_down requires a < b, got {(a, b)}")
+        self.a, self.b = float(a), float(b)
+
+    def __call__(self, x):
+        x = np.asarray(x, dtype=float)
+        return np.clip((self.b - x) / (self.b - self.a), 0.0, 1.0)
+
+    def inverse(self, y: float) -> float:
+        return self.b - float(y) * (self.b - self.a)
+
+    def __repr__(self) -> str:
+        return f"ramp_down({self.a}, {self.b})"
 
 
 # --- factory shortcuts (public API) ---------------------------------------
@@ -142,8 +187,53 @@ def sigmoid(a: float, c: float) -> Sigmoid:
     return Sigmoid(a, c)
 
 
+def ramp_up(a: float, b: float) -> RampUp:
+    """Increasing ramp MF from 0 at ``a`` to 1 at ``b`` (monotonic)."""
+    return RampUp(a, b)
+
+
+def ramp_down(a: float, b: float) -> RampDown:
+    """Decreasing ramp MF from 1 at ``a`` to 0 at ``b`` (monotonic)."""
+    return RampDown(a, b)
+
+
+# --- serialization --------------------------------------------------------
+
+# type tag -> (class, ordered attribute names)
+_REGISTRY = {
+    "tri": (Triangular, ("a", "b", "c")),
+    "trap": (Trapezoidal, ("a", "b", "c", "d")),
+    "gauss": (Gaussian, ("c", "sigma")),
+    "gbell": (GeneralizedBell, ("a", "b", "c")),
+    "sigmoid": (Sigmoid, ("a", "c")),
+    "ramp_up": (RampUp, ("a", "b")),
+    "ramp_down": (RampDown, ("a", "b")),
+}
+_TYPE_BY_CLASS = {cls: tag for tag, (cls, _) in _REGISTRY.items()}
+
+
+def to_dict(mf) -> dict:
+    """Serialize a built-in membership function to a JSON-ready dict."""
+    tag = _TYPE_BY_CLASS.get(type(mf))
+    if tag is None:
+        raise TypeError(f"cannot serialize membership function {mf!r}")
+    attrs = _REGISTRY[tag][1]
+    return {"type": tag, "params": [getattr(mf, a) for a in attrs]}
+
+
+def from_dict(d: dict):
+    """Rebuild a membership function from :func:`to_dict` output."""
+    try:
+        cls = _REGISTRY[d["type"]][0]
+    except KeyError:
+        raise ValueError(f"unknown membership type {d.get('type')!r}") from None
+    return cls(*d["params"])
+
+
 __all__ = [
     "MembershipFunction",
     "Triangular", "Trapezoidal", "Gaussian", "GeneralizedBell", "Sigmoid",
-    "tri", "trap", "gauss", "gbell", "sigmoid",
+    "RampUp", "RampDown",
+    "tri", "trap", "gauss", "gbell", "sigmoid", "ramp_up", "ramp_down",
+    "to_dict", "from_dict",
 ]

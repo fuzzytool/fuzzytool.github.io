@@ -43,6 +43,9 @@ nav:
       - Fuzzy clustering: guide/clustering.md
       - ANFIS (trainable TSK): guide/anfis.md
       - F-transform: guide/ftransform.md
+      - Rule learning & Tsukamoto: guide/rule-learning.md
+      - Fuzzy numbers & MCDM: guide/mcdm.md
+      - Batch, I/O & sklearn: guide/batch-and-io.md
       - Defuzzification: guide/defuzzification.md
       - Visualization: guide/visualization.md
   - Comparison: comparison.md

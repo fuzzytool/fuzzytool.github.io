@@ -52,6 +52,9 @@ class Mamdani:
         self.defuzz = get_defuzzifier(defuzz)
         self.rules: list[Rule] = []
         self._outputs: dict[str, Variable] = {}
+        # Original (string) spec, kept for serialization.
+        self._spec = {"tnorm": tnorm, "snorm": snorm, "implication": implication,
+                      "aggregation": aggregation, "defuzz": defuzz}
 
     def rule(self, antecedent: Antecedent, consequent: Proposition,
              weight: float = 1.0) -> Mamdani:
@@ -85,6 +88,35 @@ class Mamdani:
         crisp = {name: self.defuzz(self._outputs[name].universe, y)
                  for name, y in agg.items()}
         return next(iter(crisp.values())) if len(crisp) == 1 else crisp
+
+    def predict(self, **inputs):
+        """Vectorized inference over array-valued inputs.
+
+        Each keyword is an array of ``n`` samples. Returns an array of length
+        ``n`` for a single output, else a dict of arrays. Equivalent to calling
+        the system once per sample, but evaluated in batch.
+        """
+        if not self.rules:
+            raise RuntimeError("no rules defined")
+        arrs = {k: np.asarray(v, dtype=float) for k, v in inputs.items()}
+        n = len(next(iter(arrs.values())))
+        out: dict[str, np.ndarray] = {}
+        for name, var in self._outputs.items():
+            agg = np.zeros((n, var.universe.size))
+            for r in self.rules:
+                if r.consequent.variable.name != name:
+                    continue
+                firing = np.asarray(r.antecedent.eval(arrs, self.tnorm, self.snorm),
+                                    dtype=float) * r.weight
+                shape = var.terms[r.consequent.term](var.universe)
+                if self.implication == "min":
+                    shaped = np.minimum(firing[:, None], shape[None, :])
+                else:
+                    shaped = firing[:, None] * shape[None, :]
+                agg = self.aggregation(agg, shaped)
+            x = var.universe
+            out[name] = np.array([self.defuzz(x, agg[i]) for i in range(n)])
+        return next(iter(out.values())) if len(out) == 1 else out
 
     def __repr__(self) -> str:
         return f"Mamdani(rules={len(self.rules)}, outputs={sorted(self._outputs)})"

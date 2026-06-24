@@ -55,6 +55,10 @@ class Antecedent:
         """
         raise NotImplementedError
 
+    def to_dict(self) -> dict:
+        """Serialize this antecedent subtree to a JSON-ready dict."""
+        raise NotImplementedError
+
 
 class Proposition(Antecedent):
     """An atomic ``variable is term`` clause; also used as a consequent."""
@@ -90,6 +94,9 @@ class Proposition(Antecedent):
         d = float(np.asarray(term(x), dtype=float))
         return d, d
 
+    def to_dict(self) -> dict:
+        return {"op": "is", "var": self.variable.name, "term": self.term}
+
     def __repr__(self) -> str:
         return f"{self.variable.name} is {self.term}"
 
@@ -106,6 +113,9 @@ class And(Antecedent):
         ll, lu = self.left.eval_interval(inputs, tnorm, snorm)
         rl, ru = self.right.eval_interval(inputs, tnorm, snorm)
         return tnorm(ll, rl), tnorm(lu, ru)
+
+    def to_dict(self) -> dict:
+        return {"op": "and", "left": self.left.to_dict(), "right": self.right.to_dict()}
 
     def __repr__(self) -> str:
         return f"({self.left} and {self.right})"
@@ -124,6 +134,9 @@ class Or(Antecedent):
         rl, ru = self.right.eval_interval(inputs, tnorm, snorm)
         return snorm(ll, rl), snorm(lu, ru)
 
+    def to_dict(self) -> dict:
+        return {"op": "or", "left": self.left.to_dict(), "right": self.right.to_dict()}
+
     def __repr__(self) -> str:
         return f"({self.left} or {self.right})"
 
@@ -139,6 +152,9 @@ class Not(Antecedent):
         # The complement is order-reversing, so the bounds swap.
         lo, hi = self.operand.eval_interval(inputs, tnorm, snorm)
         return complement(hi), complement(lo)
+
+    def to_dict(self) -> dict:
+        return {"op": "not", "operand": self.operand.to_dict()}
 
     def __repr__(self) -> str:
         return f"(not {self.operand})"
@@ -202,9 +218,51 @@ class Variable:
                 self[name] = mf.gauss(c, step / 2.0)
         return self
 
+    def to_dict(self) -> dict:
+        """Serialize this variable (universe + terms) to a JSON-ready dict.
+
+        Only built-in membership functions can be serialized (see
+        :func:`fuzzytool.membership.to_dict`).
+        """
+        return {
+            "name": self.name,
+            "universe": [self.low, self.high],
+            "resolution": int(self.universe.size),
+            "terms": {name: mf.to_dict(term) for name, term in self.terms.items()},
+        }
+
+    @classmethod
+    def from_dict(cls, d: dict) -> Variable:
+        """Rebuild a variable from :meth:`to_dict` output."""
+        var = cls(d["name"], tuple(d["universe"]), resolution=d.get("resolution", 501))
+        for name, term in d["terms"].items():
+            var[name] = mf.from_dict(term)
+        return var
+
     def __repr__(self) -> str:
         return (f"Variable({self.name!r}, ({self.low}, {self.high}), "
                 f"terms={sorted(self.terms)})")
 
 
-__all__ = ["Variable", "Proposition", "Antecedent", "And", "Or", "Not"]
+def antecedent_from_dict(d: dict, variables: Mapping[str, Variable]) -> Antecedent:
+    """Rebuild an antecedent tree from :meth:`Antecedent.to_dict` output.
+
+    ``variables`` maps variable names to the :class:`Variable` instances the
+    propositions should reference.
+    """
+    op = d["op"]
+    if op == "is":
+        return variables[d["var"]][d["term"]]
+    if op == "and":
+        return And(antecedent_from_dict(d["left"], variables),
+                   antecedent_from_dict(d["right"], variables))
+    if op == "or":
+        return Or(antecedent_from_dict(d["left"], variables),
+                  antecedent_from_dict(d["right"], variables))
+    if op == "not":
+        return Not(antecedent_from_dict(d["operand"], variables))
+    raise ValueError(f"unknown antecedent op {op!r}")
+
+
+__all__ = ["Variable", "Proposition", "Antecedent", "And", "Or", "Not",
+           "antecedent_from_dict"]

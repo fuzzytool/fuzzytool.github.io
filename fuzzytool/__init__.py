@@ -18,12 +18,14 @@ t-/s-norms, defuzzifiers): a new variant is a new callable, never a change to
 the inference loop.
 """
 
-from . import cluster, datasets, defuzz, membership, norms, type2
+from . import cluster, datasets, defuzz, fuzzynum, mcdm, membership, norms, type2
 from .anfis import ANFIS
 from .cluster import fuzzy_cmeans, gustafson_kessel, possibilistic_cmeans
 from .ftransform import FTransform
-from .inference import TSK, Mamdani
-from .membership import gauss, gbell, sigmoid, trap, tri
+from .inference import TSK, Mamdani, Tsukamoto
+from .learn import wang_mendel
+from .membership import gauss, gbell, ramp_down, ramp_up, sigmoid, trap, tri
+from .serialize import load, save
 from .sets import Variable
 from .type2 import (
     IT2TSK,
@@ -34,15 +36,18 @@ from .type2 import (
     it2_scale,
 )
 
-__version__ = "0.1.0"
+__version__ = "0.2.0"
 
 __all__ = [
     "__version__",
     "Variable",
     "Mamdani",
     "TSK",
+    "Tsukamoto",
+    # rule learning
+    "wang_mendel",
     # membership shortcuts
-    "tri", "trap", "gauss", "gbell", "sigmoid",
+    "tri", "trap", "gauss", "gbell", "sigmoid", "ramp_up", "ramp_down",
     # interval type-2
     "IT2Mamdani", "IT2TSK",
     "it2", "it2_scale", "it2_gauss_uncertain_mean", "it2_gauss_uncertain_std",
@@ -50,6 +55,9 @@ __all__ = [
     "fuzzy_cmeans", "gustafson_kessel", "possibilistic_cmeans",
     # learning & approximation
     "ANFIS", "FTransform",
+    # serialization
+    "save", "load",
     # submodules
     "membership", "norms", "defuzz", "datasets", "type2", "cluster",
+    "fuzzynum", "mcdm",
 ]
