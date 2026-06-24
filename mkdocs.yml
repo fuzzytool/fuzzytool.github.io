@@ -39,6 +39,7 @@ nav:
       - Variables & rules: guide/rules.md
       - Mamdani inference: guide/mamdani.md
       - Takagi-Sugeno (TSK): guide/tsk.md
+      - Interval type-2 (IT2): guide/type2.md
       - Defuzzification: guide/defuzzification.md
       - Visualization: guide/visualization.md
   - Extending: extending.md

@@ -41,6 +41,31 @@ def plot_variable(variable: Variable, ax=None):
     return ax
 
 
+def plot_it2_variable(variable: Variable, ax=None):
+    """Plot an IT2 variable: each term's lower/upper MF with a shaded FOU.
+
+    Type-1 terms (if any are mixed in) are drawn as a single line.
+    """
+    plt = _require_mpl()
+    if ax is None:
+        _, ax = plt.subplots(figsize=(6, 3))
+    x = variable.universe
+    for name, term in variable.terms.items():
+        if hasattr(term, "lower") and hasattr(term, "upper"):
+            lo, up = term.lower(x), term.upper(x)
+            line, = ax.plot(x, up, label=name)
+            ax.plot(x, lo, color=line.get_color(), alpha=0.7)
+            ax.fill_between(x, lo, up, color=line.get_color(), alpha=0.2)
+        else:
+            ax.plot(x, term(x), label=name)
+    ax.set_title(variable.name)
+    ax.set_xlabel(variable.name)
+    ax.set_ylabel("membership")
+    ax.set_ylim(-0.05, 1.05)
+    ax.legend(loc="best", fontsize="small")
+    return ax
+
+
 def control_surface(system, x_var: Variable, y_var: Variable,
                     n: int = 41, ax=None):
     """Plot a system's output as a surface over two input variables.
@@ -69,4 +94,4 @@ def control_surface(system, x_var: Variable, y_var: Variable,
     return ax
 
 
-__all__ = ["plot_variable", "control_surface"]
+__all__ = ["plot_variable", "plot_it2_variable", "control_surface"]

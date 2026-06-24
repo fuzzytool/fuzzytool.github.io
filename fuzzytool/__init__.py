@@ -18,10 +18,18 @@ t-/s-norms, defuzzifiers): a new variant is a new callable, never a change to
 the inference loop.
 """
 
-from . import datasets, defuzz, membership, norms
+from . import datasets, defuzz, membership, norms, type2
 from .inference import TSK, Mamdani
 from .membership import gauss, gbell, sigmoid, trap, tri
 from .sets import Variable
+from .type2 import (
+    IT2TSK,
+    IT2Mamdani,
+    it2,
+    it2_gauss_uncertain_mean,
+    it2_gauss_uncertain_std,
+    it2_scale,
+)
 
 __version__ = "0.1.0"
 
@@ -32,6 +40,9 @@ __all__ = [
     "TSK",
     # membership shortcuts
     "tri", "trap", "gauss", "gbell", "sigmoid",
+    # interval type-2
+    "IT2Mamdani", "IT2TSK",
+    "it2", "it2_scale", "it2_gauss_uncertain_mean", "it2_gauss_uncertain_std",
     # submodules
-    "membership", "norms", "defuzz", "datasets",
+    "membership", "norms", "defuzz", "datasets", "type2",
 ]

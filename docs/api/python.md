@@ -30,6 +30,18 @@ Generated from docstrings with `mkdocstrings`.
 
 ::: fuzzytool.inference.tsk
 
+## Interval type-2 — sets
+
+::: fuzzytool.type2.sets
+
+## Interval type-2 — inference
+
+::: fuzzytool.type2.inference
+
+## Interval type-2 — type reduction
+
+::: fuzzytool.type2.reduction
+
 ## Visualization
 
 ::: fuzzytool.viz

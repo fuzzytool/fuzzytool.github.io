@@ -50,7 +50,7 @@ s-norm, `~` the complement.
 |------|-----------|--------|
 | 1 | Core: membership functions, t-/s-norms, `Variable`, operator rules, **Mamdani** + defuzzification, tipper example, tests | ✅ |
 | 2 | **Takagi-Sugeno (TSK)** inference + `viz` (membership plots, control surface) | ✅ (TSK + viz) |
-| 3 | **Type-2 / interval type-2** sets (footprint of uncertainty) + Karnik-Mendel type reduction | ⏳ |
+| 3 | **Type-2 / interval type-2** sets (footprint of uncertainty) + Karnik-Mendel type reduction | ✅ |
 | 4 | **Fuzzy clustering**: fuzzy c-means, Gustafson-Kessel, possibilistic | ⏳ |
 | 5 | **ANFIS** (trainable TSK) + **F-transform** (direct/inverse) | ⏳ |
 | 6 | Notebooks, JOSS `paper.md`, Zenodo DOI, PyPI release | ⏳ |

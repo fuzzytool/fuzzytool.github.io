@@ -26,6 +26,11 @@ from .norms import complement
 _KINDS = {"triangular": "tri", "tri": "tri", "gauss": "gauss", "gaussian": "gauss"}
 
 
+def _is_it2(term) -> bool:
+    """An IT2 term exposes ``.lower`` and ``.upper`` (duck-typed to avoid an import)."""
+    return hasattr(term, "lower") and hasattr(term, "upper")
+
+
 class Antecedent:
     """Base node of a rule-antecedent expression tree."""
 
@@ -39,7 +44,15 @@ class Antecedent:
         return Not(self)
 
     def eval(self, inputs: Mapping[str, float], tnorm, snorm) -> np.ndarray:
-        """Return the firing strength given crisp ``inputs``."""
+        """Return the (type-1) firing strength given crisp ``inputs``."""
+        raise NotImplementedError
+
+    def eval_interval(self, inputs: Mapping[str, float], tnorm, snorm):
+        """Return the firing *interval* ``(lower, upper)`` for IT2 inference.
+
+        Type-1 terms collapse to a degenerate interval ``(d, d)``, so type-1 and
+        IT2 terms may be mixed freely in the same antecedent.
+        """
         raise NotImplementedError
 
 
@@ -60,7 +73,22 @@ class Proposition(Antecedent):
             x = inputs[self.variable.name]
         except KeyError:
             raise KeyError(f"missing input for variable {self.variable.name!r}") from None
-        return np.asarray(self.variable.terms[self.term](x), dtype=float)
+        term = self.variable.terms[self.term]
+        if _is_it2(term):  # collapse an IT2 term to its mean membership
+            lo, hi = term.lower(x), term.upper(x)
+            return np.asarray((lo + hi) / 2.0, dtype=float)
+        return np.asarray(term(x), dtype=float)
+
+    def eval_interval(self, inputs, tnorm, snorm):
+        try:
+            x = inputs[self.variable.name]
+        except KeyError:
+            raise KeyError(f"missing input for variable {self.variable.name!r}") from None
+        term = self.variable.terms[self.term]
+        if _is_it2(term):
+            return float(term.lower(x)), float(term.upper(x))
+        d = float(np.asarray(term(x), dtype=float))
+        return d, d
 
     def __repr__(self) -> str:
         return f"{self.variable.name} is {self.term}"
@@ -74,6 +102,11 @@ class And(Antecedent):
         return tnorm(self.left.eval(inputs, tnorm, snorm),
                      self.right.eval(inputs, tnorm, snorm))
 
+    def eval_interval(self, inputs, tnorm, snorm):
+        ll, lu = self.left.eval_interval(inputs, tnorm, snorm)
+        rl, ru = self.right.eval_interval(inputs, tnorm, snorm)
+        return tnorm(ll, rl), tnorm(lu, ru)
+
     def __repr__(self) -> str:
         return f"({self.left} and {self.right})"
 
@@ -86,6 +119,11 @@ class Or(Antecedent):
         return snorm(self.left.eval(inputs, tnorm, snorm),
                      self.right.eval(inputs, tnorm, snorm))
 
+    def eval_interval(self, inputs, tnorm, snorm):
+        ll, lu = self.left.eval_interval(inputs, tnorm, snorm)
+        rl, ru = self.right.eval_interval(inputs, tnorm, snorm)
+        return snorm(ll, rl), snorm(lu, ru)
+
     def __repr__(self) -> str:
         return f"({self.left} or {self.right})"
 
@@ -96,6 +134,11 @@ class Not(Antecedent):
 
     def eval(self, inputs, tnorm, snorm):
         return complement(self.operand.eval(inputs, tnorm, snorm))
+
+    def eval_interval(self, inputs, tnorm, snorm):
+        # The complement is order-reversing, so the bounds swap.
+        lo, hi = self.operand.eval_interval(inputs, tnorm, snorm)
+        return complement(hi), complement(lo)
 
     def __repr__(self) -> str:
         return f"(not {self.operand})"

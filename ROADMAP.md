@@ -18,11 +18,14 @@ self-contained, testable increment.
 - [x] `viz`: membership plots, 2-input control surface.
 - [ ] Example notebooks (tipper, TSK, comparison).
 
-## ⏳ Phase 3 — Type-2 / interval type-2
+## ✅ Phase 3 — Type-2 / interval type-2
 
-- [ ] IT2 membership functions (footprint of uncertainty).
-- [ ] IT2 inference.
-- [ ] Karnik-Mendel type reduction + defuzzification.
+- [x] IT2 membership functions (footprint of uncertainty): explicit LMF/UMF,
+      height scaling, uncertain Gaussian mean, uncertain Gaussian spread.
+- [x] Interval antecedent evaluation (type-1 and IT2 terms mix freely).
+- [x] IT2 inference: `IT2Mamdani` (center-of-sets) and `IT2TSK`.
+- [x] Karnik-Mendel type reduction (`km_endpoint`, `karnik_mendel`,
+      `centroid_it2`) + FOU visualization.
 
 ## ⏳ Phase 4 — Fuzzy clustering
 
