@@ -1,8 +1,8 @@
 # Comparison with scikit-fuzzy
 
-[scikit-fuzzy](https://github.com/scikit-fuzzy/scikit-fuzzy) is the most common
-fuzzy-logic package for Python. fuzzytool targets the same core use cases with a
-more composable API and a broader, extensible scope.
+[scikit-fuzzy](https://github.com/scikit-fuzzy/scikit-fuzzy) is a fuzzy-logic
+package for Python. fuzzytool targets the same core use cases with a more
+composable API and a broader, extensible scope.
 
 ## API ergonomics
 
