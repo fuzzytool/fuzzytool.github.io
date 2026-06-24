@@ -46,6 +46,14 @@ Generated from docstrings with `mkdocstrings`.
 
 ::: fuzzytool.cluster
 
+## ANFIS
+
+::: fuzzytool.anfis
+
+## F-transform
+
+::: fuzzytool.ftransform
+
 ## Visualization
 
 ::: fuzzytool.viz

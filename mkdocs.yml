@@ -41,6 +41,8 @@ nav:
       - Takagi-Sugeno (TSK): guide/tsk.md
       - Interval type-2 (IT2): guide/type2.md
       - Fuzzy clustering: guide/clustering.md
+      - ANFIS (trainable TSK): guide/anfis.md
+      - F-transform: guide/ftransform.md
       - Defuzzification: guide/defuzzification.md
       - Visualization: guide/visualization.md
   - Extending: extending.md

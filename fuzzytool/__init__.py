@@ -19,7 +19,9 @@ the inference loop.
 """
 
 from . import cluster, datasets, defuzz, membership, norms, type2
+from .anfis import ANFIS
 from .cluster import fuzzy_cmeans, gustafson_kessel, possibilistic_cmeans
+from .ftransform import FTransform
 from .inference import TSK, Mamdani
 from .membership import gauss, gbell, sigmoid, trap, tri
 from .sets import Variable
@@ -46,6 +48,8 @@ __all__ = [
     "it2", "it2_scale", "it2_gauss_uncertain_mean", "it2_gauss_uncertain_std",
     # fuzzy clustering
     "fuzzy_cmeans", "gustafson_kessel", "possibilistic_cmeans",
+    # learning & approximation
+    "ANFIS", "FTransform",
     # submodules
     "membership", "norms", "defuzz", "datasets", "type2", "cluster",
 ]

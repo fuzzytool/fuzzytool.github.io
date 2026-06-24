@@ -35,10 +35,12 @@ self-contained, testable increment.
 - [x] Cluster-quality metrics (partition coefficient, partition entropy,
       Xie-Beni) + 2-D cluster visualization and a synthetic-blob generator.
 
-## ⏳ Phase 5 — ANFIS + F-transform
+## ✅ Phase 5 — ANFIS + F-transform
 
-- [ ] ANFIS: trainable first-order TSK (gradient / least squares).
-- [ ] F-transform: direct and inverse, with basis generation.
+- [x] ANFIS: trainable first-order TSK with Jang's hybrid learning (least
+      squares for consequents + gradient descent for premises).
+- [x] F-transform: direct and inverse over a triangular fuzzy partition
+      (partition of unity), with smoothing/denoising.
 
 ## ⏳ Phase 6 — Release
 

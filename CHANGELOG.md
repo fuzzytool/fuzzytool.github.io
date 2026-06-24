@@ -8,6 +8,12 @@ All notable changes to this project are documented here. The format is based on
 
 ### Added
 
+- **ANFIS** (`fuzzytool.anfis.ANFIS`): a trainable first-order Sugeno system over
+  a grid partition, fit with Jang's hybrid scheme (least-squares consequents +
+  gradient-descent premises). `fit` / `predict` / `history_`.
+- **F-transform** (`fuzzytool.ftransform.FTransform`): direct and inverse fuzzy
+  transform over a triangular partition of unity, with `fit` / `smooth` for
+  denoising and compression.
 - **Fuzzy clustering** (`fuzzytool.cluster`):
   - `fuzzy_cmeans` (Bezdek FCM), `gustafson_kessel` (adaptive Mahalanobis norm),
     `possibilistic_cmeans` (typicalities); all seeded for reproducibility.
