@@ -29,6 +29,7 @@ dependencies = ["numpy>=1.21"]
 viz = ["matplotlib>=3.4"]
 dev = ["pytest>=7", "pytest-cov", "ruff"]
 docs = ["mkdocs-material", "mkdocstrings[python]"]
+notebooks = ["jupyter", "nbconvert", "nbformat", "ipykernel", "matplotlib>=3.4"]
 
 [project.urls]
 Homepage = "https://fuzzytool.github.io"

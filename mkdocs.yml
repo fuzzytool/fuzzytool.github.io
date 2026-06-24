@@ -45,7 +45,9 @@ nav:
       - F-transform: guide/ftransform.md
       - Defuzzification: guide/defuzzification.md
       - Visualization: guide/visualization.md
+  - Comparison: comparison.md
   - Extending: extending.md
+  - Citing & releasing: citing.md
   - API reference: api/python.md
 
 markdown_extensions:

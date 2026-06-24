@@ -8,6 +8,10 @@ All notable changes to this project are documented here. The format is based on
 
 ### Added
 
+- Example notebooks (`notebooks/`): quickstart, interval type-2, clustering, and
+  ANFIS/F-transform — committed executed.
+- Documentation: a comparison page vs scikit-fuzzy and a citing/releasing page;
+  `.zenodo.json` for DOI archival; `notebooks` optional dependency group.
 - **ANFIS** (`fuzzytool.anfis.ANFIS`): a trainable first-order Sugeno system over
   a grid partition, fit with Jang's hybrid scheme (least-squares consequents +
   gradient-descent premises). `fit` / `predict` / `history_`.

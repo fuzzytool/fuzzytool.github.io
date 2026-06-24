@@ -18,6 +18,9 @@ htmlcov/
 # MkDocs build output
 site/
 
+# Jupyter
+.ipynb_checkpoints/
+
 # OS / editor
 .DS_Store
 .vscode/

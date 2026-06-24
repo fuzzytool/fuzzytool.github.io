@@ -1,0 +1,24 @@
+{
+  "title": "fuzzytool: a clean, extensible fuzzy-logic toolkit in pure Python",
+  "description": "A composable, extensible fuzzy-logic toolkit in pure Python + NumPy: membership functions, t-/s-norms, Mamdani and Takagi-Sugeno inference, interval type-2 sets with Karnik-Mendel type reduction, fuzzy clustering (FCM, Gustafson-Kessel, possibilistic), ANFIS, and the F-transform.",
+  "license": "MIT",
+  "upload_type": "software",
+  "access_right": "open",
+  "creators": [
+    {
+      "name": "Salmeron, Jose L.",
+      "affiliation": "CUNEF Universidad"
+    }
+  ],
+  "keywords": [
+    "fuzzy logic",
+    "fuzzy inference",
+    "Mamdani",
+    "Takagi-Sugeno",
+    "interval type-2",
+    "fuzzy clustering",
+    "ANFIS",
+    "F-transform",
+    "Python"
+  ]
+}

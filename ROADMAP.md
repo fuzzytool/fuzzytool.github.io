@@ -44,6 +44,9 @@ self-contained, testable increment.
 
 ## ⏳ Phase 6 — Release
 
-- [ ] Example notebooks and a comparison page vs scikit-fuzzy.
-- [ ] JOSS `paper.md`, Zenodo DOI.
-- [ ] Publish to PyPI; enable GitHub Pages.
+- [x] Example notebooks (`notebooks/`) and a comparison page vs scikit-fuzzy.
+- [x] JOSS `paper.md`; Zenodo metadata (`.zenodo.json`) and a citing/releasing page.
+- [x] GitHub Pages live (`https://fuzzytool.github.io`).
+- [ ] Register the PyPI trusted publisher, then tag `v0.1.0` to publish (the
+      `release-pypi.yml` workflow is ready).
+- [ ] Enable the Zenodo GitHub integration and cut a release to mint a DOI.
