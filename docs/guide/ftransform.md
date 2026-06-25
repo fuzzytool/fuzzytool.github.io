@@ -7,7 +7,7 @@ uses a uniform triangular partition whose basis functions sum to 1 everywhere
 
 - the **direct** transform reduces the data to `n_basis` components, each a
   membership-weighted average of the samples under one basis function;
-- the **inverse** transform reconstructs `f̂(x) = Σ_k F_k · A_k(x)`.
+- the **inverse** transform reconstructs $\hat{f}(x) = \sum_k F_k \, A_k(x)$.
 
 Few components → a smoothing/denoising round trip; many components → a close
 approximation.
