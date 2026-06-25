@@ -14,6 +14,8 @@ viz.plot_variable(premium)
 plt.show()
 ```
 
+![Membership functions of the premium variable: low, medium and high terms](../images/premium_terms.png)
+
 ## Control surface
 
 For a single-output system over two inputs:
@@ -25,3 +27,5 @@ sys, score, dti, premium = datasets.credit_risk()
 viz.control_surface(sys, score, dti)
 plt.show()
 ```
+
+![Control surface of the credit-risk system: premium as a function of score and dti](../images/credit_control_surface.png)

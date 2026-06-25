@@ -48,3 +48,5 @@ from fuzzytool import viz
 viz.plot_clusters(X, res)   # 2-D scatter; opacity encodes top membership
 plt.show()
 ```
+
+![Fuzzy c-means on three blobs: points colored by cluster, centers marked, opacity encoding top membership](../images/clusters.png)

@@ -59,3 +59,7 @@ viz.plot_variable(amount_anomaly)
 viz.control_surface(sys, amount_anomaly, velocity)
 plt.show()
 ```
+
+![Membership functions of amount_anomaly: normal, elevated and extreme terms](../images/fraud_anomaly_terms.png)
+
+![Control surface: fraud risk as a function of amount anomaly and transaction velocity](../images/fraud_control_surface.png)

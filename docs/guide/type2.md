@@ -62,6 +62,15 @@ reusable primitive ([`fuzzytool.type2.reduction`][fuzzytool.type2.reduction]):
 `km_endpoint` finds one endpoint, `karnik_mendel` returns both, and
 `centroid_it2` applies it to compute an IT2 set's centroid interval.
 
+```python
+import numpy as np
+from fuzzytool.type2.reduction import centroid_it2
+
+good = fz.it2_gauss_uncertain_mean(740, 780, 50)
+universe = np.linspace(300, 850, 400)
+centroid_it2(good, universe)   # -> (738.05, 772.07), the [y_l, y_r] centroid interval
+```
+
 ## Visualization
 
 ```python
@@ -71,3 +80,5 @@ from fuzzytool import viz
 viz.plot_it2_variable(score)   # draws each term's LMF/UMF with a shaded FOU
 plt.show()
 ```
+
+![IT2 score variable: each term's LMF and UMF with a shaded footprint of uncertainty](../images/it2_score.png)

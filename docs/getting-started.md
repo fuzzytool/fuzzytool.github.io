@@ -55,3 +55,7 @@ viz.plot_variable(score)
 viz.control_surface(sys, score, dti)
 plt.show()
 ```
+
+![Membership functions of the score variable: poor, fair, good and excellent terms](images/gs_score_terms.png)
+
+![Control surface: risk premium as a function of score and dti](images/credit_control_surface.png)
