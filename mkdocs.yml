@@ -48,7 +48,6 @@ nav:
       - Batch, I/O & sklearn: guide/batch-and-io.md
       - Defuzzification: guide/defuzzification.md
       - Visualization: guide/visualization.md
-  - Comparison: comparison.md
   - Extending: extending.md
   - Citing & releasing: citing.md
   - API reference: api/python.md
