@@ -10,13 +10,13 @@ self-contained, testable increment.
 - [x] T-norms / s-norms resolved by name; standard complement.
 - [x] `Variable` + operator-based antecedent tree (`&`, `|`, `~`).
 - [x] Mamdani inference + defuzzification (centroid, bisector, MOM/SOM/LOM).
-- [x] Tipper example, test suite, packaging, docs, CI.
+- [x] Fraud-alert example, test suite, packaging, docs, CI.
 
 ## ✅ Phase 2 — TSK + visualization
 
 - [x] Takagi-Sugeno inference (zero/first-order + callable consequents).
 - [x] `viz`: membership plots, 2-input control surface.
-- [ ] Example notebooks (tipper, TSK, comparison).
+- [ ] Example notebooks (fraud-alert, TSK).
 
 ## ✅ Phase 3 — Type-2 / interval type-2
 

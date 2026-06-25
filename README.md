@@ -49,7 +49,7 @@ s-norm, `~` the complement.
 
 | Phase | Content | Status |
 |------|-----------|--------|
-| 1 | Core: membership functions, t-/s-norms, `Variable`, operator rules, **Mamdani** + defuzzification, tipper example, tests | ✅ |
+| 1 | Core: membership functions, t-/s-norms, `Variable`, operator rules, **Mamdani** + defuzzification, fraud-alert example, tests | ✅ |
 | 2 | **Takagi-Sugeno (TSK)** inference + `viz` (membership plots, control surface) | ✅ (TSK + viz) |
 | 3 | **Type-2 / interval type-2** sets (footprint of uncertainty) + Karnik-Mendel type reduction | ✅ |
 | 4 | **Fuzzy clustering**: fuzzy c-means, Gustafson-Kessel, possibilistic | ✅ |
@@ -80,7 +80,7 @@ From source, for development:
 python -m venv .venv && source .venv/bin/activate
 pip install -e ".[dev,viz,docs]"
 pytest -q
-python examples/tipper.py
+python examples/fraud_alert.py
 ```
 
 ## Documentation
