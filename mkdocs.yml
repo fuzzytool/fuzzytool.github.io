@@ -38,6 +38,7 @@ nav:
       - Membership functions: guide/membership.md
       - Variables & rules: guide/rules.md
       - Mamdani inference: guide/mamdani.md
+      - 'Example: fraud-alert score': guide/fraud-alert.md
       - Takagi-Sugeno (TSK): guide/tsk.md
       - Interval type-2 (IT2): guide/type2.md
       - Fuzzy clustering: guide/clustering.md
