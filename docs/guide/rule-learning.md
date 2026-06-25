@@ -18,7 +18,7 @@ b = fz.Variable("b", (0, 10), terms=["lo", "mid", "hi"])
 out = fz.Variable("out", (0, 10), terms=["lo", "mid", "hi"])
 
 sys = fz.wang_mendel(X, y, [a, b], out)   # a ready-to-use Mamdani system
-sys(a=8, b=7)
+sys(a=8, b=7)    # -> 5.88  (learned system approximates the mean (a + b) / 2)
 ```
 
 The input variables supply the partition; the learned system is a plain
@@ -39,7 +39,7 @@ x = fz.Variable("x", (0, 10), terms=["lo", "hi"])
 sys = fz.Tsukamoto()
 sys.rule(x["lo"], fz.ramp_down(0, 30))   # monotonic consequents only
 sys.rule(x["hi"], fz.ramp_up(0, 30))
-sys(x=7)
+sys(x=7)    # -> 21.0
 ```
 
 Use [`ramp_up`][fuzzytool.membership.ramp_up],

@@ -39,8 +39,8 @@ matrix = [
 ]
 weights = [tfn(0.4, 0.5, 0.6), tfn(0.3, 0.4, 0.5)]
 res = fuzzy_topsis(matrix, weights, benefit=[True, True])
-res.closeness   # closeness coefficient per alternative
-res.ranking     # alternative indices, best first
+res.closeness   # -> array([0.369, 0.316]), closeness coefficient per alternative
+res.ranking     # -> [0, 1], alternative indices, best first
 ```
 
 ### Fuzzy AHP (Chang's extent analysis)
@@ -53,8 +53,8 @@ from fuzzytool.mcdm import fuzzy_ahp
 
 one = tfn(1, 1, 1)
 matrix = [
-    [one,                  tfn(2, 3, 4)],
-    [tfn(1/4, 1/3, 1/2),   one],
+    [one,                tfn(1, 2, 3)],
+    [tfn(1/3, 1/2, 1),   one],
 ]
-fuzzy_ahp(matrix)   # normalized weights, e.g. [0.74, 0.26]
+fuzzy_ahp(matrix)   # -> array([0.69, 0.31]), normalized crisp weights
 ```

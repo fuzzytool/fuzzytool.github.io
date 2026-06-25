@@ -14,7 +14,7 @@ sys, *_ = datasets.credit_risk()
 scores = np.array([520.0, 660.0, 800.0])
 dtis   = np.array([42.0, 30.0, 10.0])
 
-sys.predict(score=scores, dti=dtis)   # array of premiums, one per sample
+sys.predict(score=scores, dti=dtis)   # -> array([10.16, 6.  ,  1.91]), one premium per sample
 ```
 
 The result matches calling the system once per sample, but the firing, implication

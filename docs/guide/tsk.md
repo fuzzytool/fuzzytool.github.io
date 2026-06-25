@@ -20,7 +20,7 @@ sys.rule(x["small"], 0.0)                       # zero-order
 sys.rule(x["large"], {"const": 1.0, "x": 1.0})  # first-order: 1 + x
 sys.rule(x["small"], lambda x: x**2)            # arbitrary callable
 
-sys(x=10.0)
+sys(x=10.0)    # -> 11.0
 ```
 
 TSK systems are typically faster and differentiable, which makes them the basis

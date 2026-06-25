@@ -41,8 +41,8 @@ sys.rule(score["good"] | score["excellent"], premium["low"])
 The system is **callable**. Pass crisp inputs by variable name:
 
 ```python
-sys(score=800, dti=10)    # strong borrower -> low premium
-sys(score=520, dti=42)    # weak borrower  -> high premium
+sys(score=800, dti=10)    # strong borrower -> 2.45 pts (low premium)
+sys(score=520, dti=42)    # weak borrower   -> 9.93 pts (high premium)
 ```
 
 ## 4. Visualize (optional)

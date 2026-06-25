@@ -49,7 +49,7 @@ premium["high"] = fz.it2_gauss_uncertain_mean(9.5, 10.5, 1.5)
 sys = fz.IT2Mamdani()
 sys.rule(score["good"], premium["low"])
 sys.rule(score["poor"], premium["high"])
-sys(score=780)
+sys(score=780)    # -> 2.29  (midpoint of the type-reduced interval)
 ```
 
 A ready-made example is [`fuzzytool.datasets.credit_risk_it2`][fuzzytool.datasets].
