@@ -5,6 +5,7 @@ repo_url: https://github.com/fuzzytool/fuzzytool.github.io
 repo_name: fuzzytool/fuzzytool.github.io
 docs_dir: docs
 site_dir: site
+copyright: "© 2026 Jose L. Salmeron"
 
 theme:
   name: material

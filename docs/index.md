@@ -34,3 +34,8 @@ sys(score=800, dti=10)   # -> a crisp risk premium
 - [Installation](installation.md)
 - [Getting started](getting-started.md)
 - [The guide](guide/membership.md)
+
+## Author
+
+Created and maintained by **Jose L. Salmeron**. If you use fuzzytool in academic
+work, please [cite it](citing.md).
