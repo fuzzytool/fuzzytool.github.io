@@ -51,6 +51,21 @@ self-contained, testable increment.
 - [x] Vectorized batch inference (`Mamdani.predict` / `TSK.predict`);
       JSON serialization (`save`/`load`); scikit-learn estimator interface on ANFIS.
 
+## 🔌 Ecosystem integrations (`fuzzytool.integrations.*`)
+
+Each pulls its dependency in only on import, behind its own extra.
+
+- [x] **pandas** (`[pandas]`): `predict_df`, `rules_dataframe`,
+      `memberships_dataframe`, `components_dataframe`.
+- [x] **scikit-learn** (`[sklearn]`): `Fuzzifier` transformer,
+      `WangMendelRegressor`, `FuzzySystemRegressor` (ANFIS already compatible).
+- [ ] **SciPy** (`[scipy]`): tune MF parameters to data via `scipy.optimize`.
+- [ ] **Optuna** (`[optuna]`): search system structure (MFs, defuzz, norms, `c`).
+- [ ] **Joblib / Dask** (`[parallel]`, `[dask]`): parallel batch inference / sweeps.
+- [ ] **PyTorch** (`[torch]`): differentiable TSK/ANFIS `nn.Module` layer.
+- [ ] **Agents (LangChain/LangGraph)** (`[agents]`): an explainable LLM tool that
+      runs a system and reports which rules fired.
+
 ## Ideas for later
 
 - Fuzzy cognitive maps (+ grey FCM).

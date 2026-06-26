@@ -78,6 +78,14 @@ Generated from docstrings with `mkdocstrings`.
 
 ::: fuzzytool.viz
 
+## Integrations — pandas
+
+::: fuzzytool.integrations.pandas
+
+## Integrations — scikit-learn
+
+::: fuzzytool.integrations.sklearn
+
 ## Datasets
 
 ::: fuzzytool.datasets

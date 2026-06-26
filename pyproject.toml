@@ -27,7 +27,9 @@ dependencies = ["numpy>=1.21"]
 
 [project.optional-dependencies]
 viz = ["matplotlib>=3.4"]
-dev = ["pytest>=7", "pytest-cov", "ruff"]
+pandas = ["pandas>=1.3"]
+sklearn = ["scikit-learn>=1.0"]
+dev = ["pytest>=7", "pytest-cov", "ruff", "pandas>=1.3", "scikit-learn>=1.0"]
 docs = ["mkdocs-material", "mkdocstrings[python]"]
 notebooks = ["jupyter", "nbconvert", "nbformat", "ipykernel", "matplotlib>=3.4"]
 
