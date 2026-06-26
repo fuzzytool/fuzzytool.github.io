@@ -35,6 +35,11 @@ nav:
   - Home: index.md
   - Installation: installation.md
   - Getting started: getting-started.md
+  - Tutorials:
+      - Investment-risk advisor (Mamdani): tutorials/risk-advisor.md
+      - Learning a model with ANFIS: tutorials/anfis-learning.md
+      - Decisions with Fuzzy TOPSIS: tutorials/topsis-decision.md
+      - Customer segmentation (clustering): tutorials/clustering-segmentation.md
   - Guide:
       - Membership functions: guide/membership.md
       - Variables & rules: guide/rules.md
