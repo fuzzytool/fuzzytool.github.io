@@ -5,7 +5,7 @@ repo_url: https://github.com/fuzzytool/fuzzytool.github.io
 repo_name: fuzzytool/fuzzytool.github.io
 docs_dir: docs
 site_dir: site
-copyright: "© 2026 Jose L. Salmeron"
+copyright: 'Created by <a href="https://salmeron.cunef.edu">Jose L. Salmeron</a>'
 
 theme:
   name: material
@@ -67,6 +67,18 @@ markdown_extensions:
   - pymdownx.superfences
   - pymdownx.tabbed:
       alternate_style: true
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/fuzzytool/fuzzytool.github.io
+      name: fuzzytool on GitHub
+    - icon: fontawesome/brands/orcid
+      link: https://orcid.org/0000-0001-7811-3716
+      name: Jose L. Salmeron on ORCID
+    - icon: fontawesome/solid/globe
+      link: https://salmeron.cunef.edu
+      name: Jose L. Salmeron's website
 
 extra_javascript:
   - javascripts/mathjax.js
