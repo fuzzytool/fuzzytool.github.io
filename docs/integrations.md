@@ -8,9 +8,9 @@ third-party dependency **only when imported**, so the base install stays light.
 |---|---|---|
 | pandas | `fuzzytool.integrations.pandas` | `pip install fuzzytool[pandas]` |
 | scikit-learn | `fuzzytool.integrations.sklearn` | `pip install fuzzytool[sklearn]` |
+| PyTorch | `fuzzytool.integrations.torch` | `pip install fuzzytool[torch]` |
 
-More (SciPy tuning, Optuna search, PyTorch layers, LLM agent tools) are on the
-roadmap.
+More (SciPy tuning, Optuna search, LLM agent tools) are on the roadmap.
 
 ## pandas
 
@@ -118,4 +118,49 @@ from fuzzytool.integrations.sklearn import FuzzySystemRegressor
 
 reg = FuzzySystemRegressor(sys, columns=["score", "dti"]).fit(X_credit)
 reg.predict(X_credit)   # same as sys.predict(score=..., dti=...)
+```
+
+## PyTorch
+
+`FuzzyLayer` is a first-order Takagi-Sugeno system written as a
+`torch.nn.Module`: its Gaussian membership functions and affine consequents are
+plain `Parameter`s, so the whole layer is **differentiable** and trains by
+backprop — standalone, or as one block inside a larger network. It is the
+gradient-based sibling of [`ANFIS`](guide/anfis.md).
+
+### Train it on its own
+
+A convenience `fit` (Adam + MSE) returns the RMSE history:
+
+```python
+import numpy as np
+from fuzzytool.integrations.torch import FuzzyLayer
+
+rng = np.random.default_rng(0)
+X = rng.uniform(0, 1, size=(400, 2)).astype("float32")
+y = np.sin(3 * X[:, 0]) + X[:, 1] ** 2            # a nonlinear target
+
+layer = FuzzyLayer(n_inputs=2, n_mf=4, init_range=(0, 1))
+history = layer.fit(X, y, epochs=300, lr=0.05)
+history[0], history[-1]    # -> (~1.07, ~0.008)  RMSE before/after training
+```
+
+Scale your inputs (or pass `init_range`) so the membership centers start spread
+across the data.
+
+### Compose it into a network
+
+Because it is a regular `nn.Module` with shape `(batch, n_inputs) -> (batch, 1)`,
+it drops into any model and trains end-to-end with autograd:
+
+```python
+import torch
+from torch import nn
+
+net = nn.Sequential(
+    nn.Linear(8, 2),       # upstream features -> 2 fuzzy inputs
+    FuzzyLayer(2, n_mf=3), # interpretable fuzzy reasoning block
+)
+loss = nn.MSELoss()(net(torch.randn(16, 8)), torch.randn(16, 1))
+loss.backward()            # gradients flow through the membership functions
 ```

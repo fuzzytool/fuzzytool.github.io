@@ -116,3 +116,40 @@ def test_estimators_clone_in_sklearn():
     est = Fuzzifier([score])
     cloned = sklearn_base.clone(est)
     assert cloned.get_params().keys() == est.get_params().keys()
+
+
+# --- PyTorch integration ----------------------------------------------------
+
+def test_fuzzy_layer_forward_shape():
+    torch = pytest.importorskip("torch")
+    from fuzzytool.integrations.torch import FuzzyLayer
+
+    layer = FuzzyLayer(n_inputs=2, n_mf=3)
+    out = layer(torch.zeros(5, 2))
+    assert out.shape == (5, 1)
+
+
+def test_fuzzy_layer_trains_and_backprops():
+    torch = pytest.importorskip("torch")
+    from fuzzytool.integrations.torch import FuzzyLayer
+
+    torch.manual_seed(0)
+    rng = np.random.default_rng(0)
+    X = rng.uniform(0, 1, size=(300, 2)).astype("float32")
+    y = (np.sin(3 * X[:, 0]) + X[:, 1] ** 2).astype("float32")
+
+    layer = FuzzyLayer(n_inputs=2, n_mf=4, init_range=(0, 1))
+    hist = layer.fit(X, y, epochs=200, lr=0.05)
+    assert hist[-1] < hist[0] * 0.5                 # error at least halved
+    # gradients reach the membership-function parameters
+    layer(torch.tensor(X[:4])).sum().backward()
+    assert layer.centers.grad is not None
+
+
+def test_fuzzy_layer_rejects_bad_shape():
+    torch = pytest.importorskip("torch")
+    from fuzzytool.integrations.torch import FuzzyLayer
+
+    layer = FuzzyLayer(n_inputs=2)
+    with pytest.raises(ValueError):
+        layer(torch.zeros(5, 3))

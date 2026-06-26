@@ -59,10 +59,11 @@ Each pulls its dependency in only on import, behind its own extra.
       `memberships_dataframe`, `components_dataframe`.
 - [x] **scikit-learn** (`[sklearn]`): `Fuzzifier` transformer,
       `WangMendelRegressor`, `FuzzySystemRegressor` (ANFIS already compatible).
+- [x] **PyTorch** (`[torch]`): `FuzzyLayer`, a differentiable first-order TSK
+      `nn.Module` trainable by autograd and composable into a network.
 - [ ] **SciPy** (`[scipy]`): tune MF parameters to data via `scipy.optimize`.
 - [ ] **Optuna** (`[optuna]`): search system structure (MFs, defuzz, norms, `c`).
 - [ ] **Joblib / Dask** (`[parallel]`, `[dask]`): parallel batch inference / sweeps.
-- [ ] **PyTorch** (`[torch]`): differentiable TSK/ANFIS `nn.Module` layer.
 - [ ] **Agents (LangChain/LangGraph)** (`[agents]`): an explainable LLM tool that
       runs a system and reports which rules fired.
 
