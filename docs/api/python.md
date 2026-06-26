@@ -86,6 +86,14 @@ Generated from docstrings with `mkdocstrings`.
 
 ::: fuzzytool.integrations.sklearn
 
+## Integrations — SciPy
+
+::: fuzzytool.integrations.scipy
+
+## Integrations — Optuna
+
+::: fuzzytool.integrations.optuna
+
 ## Datasets
 
 ::: fuzzytool.datasets

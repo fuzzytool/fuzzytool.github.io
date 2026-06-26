@@ -153,3 +153,68 @@ def test_fuzzy_layer_rejects_bad_shape():
     layer = FuzzyLayer(n_inputs=2)
     with pytest.raises(ValueError):
         layer(torch.zeros(5, 3))
+
+
+# --- SciPy integration ------------------------------------------------------
+
+def test_scipy_tune_reduces_error():
+    pytest.importorskip("scipy")
+    from fuzzytool.integrations.scipy import tune
+
+    rng = np.random.default_rng(0)
+    X = rng.uniform(0, 10, size=(150, 1))
+    y = (np.sin(X[:, 0]) + 0.1 * X[:, 0]).ravel()
+    x = fz.Variable("x", (0, 10), terms=["lo", "mid", "hi"])
+    sys = fz.TSK()
+    sys.rule(x["lo"], 0.0)
+    sys.rule(x["mid"], 0.5)
+    sys.rule(x["hi"], 1.0)
+
+    before = np.sqrt(np.nanmean((sys.predict(x=X[:, 0]) - y) ** 2))
+    res = tune(sys, X, y, columns=["x"])
+    after = np.sqrt(np.nanmean((sys.predict(x=X[:, 0]) - y) ** 2))
+    assert after < before
+    assert hasattr(res, "x") and hasattr(res, "cost")
+
+
+def test_scipy_tune_keeps_membership_valid():
+    pytest.importorskip("scipy")
+    from fuzzytool import membership as mf
+    from fuzzytool.integrations.scipy import tune
+
+    rng = np.random.default_rng(1)
+    X = rng.uniform(0, 10, size=(80, 1))
+    y = np.cos(X[:, 0])
+    x = fz.Variable("x", (0, 10), terms=["lo", "hi"])
+    sys = fz.TSK()
+    sys.rule(x["lo"], -1.0)
+    sys.rule(x["hi"], 1.0)
+    tune(sys, X, y, columns=["x"], max_nfev=50)
+    # triangular breakpoints remain ordered after tuning
+    for term in x.terms.values():
+        a, b, c = mf.to_dict(term)["params"]
+        assert a <= b <= c
+
+
+# --- Optuna integration -----------------------------------------------------
+
+def test_suggest_inference_spec():
+    optuna = pytest.importorskip("optuna")
+    from fuzzytool.integrations.optuna import suggest_inference_spec
+
+    spec = suggest_inference_spec(optuna.create_study().ask())
+    assert set(spec) == {"tnorm", "snorm", "implication", "defuzz"}
+    sys = fz.Mamdani(**spec)                    # spec is a valid Mamdani config
+    assert sys is not None
+
+
+def test_tune_anfis_returns_fitted_model():
+    pytest.importorskip("optuna")
+    from fuzzytool.integrations.optuna import tune_anfis
+
+    x = np.linspace(0, 6, 100)[:, None]
+    y = np.sin(x[:, 0])
+    best, study = tune_anfis(x, y, n_trials=3, epochs=30, seed=0)
+    assert best.history_                        # it was trained
+    assert np.isfinite(study.best_value)
+    assert best.n_mf == study.best_params["n_mf"]

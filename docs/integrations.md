@@ -9,8 +9,10 @@ third-party dependency **only when imported**, so the base install stays light.
 | pandas | `fuzzytool.integrations.pandas` | `pip install fuzzytool[pandas]` |
 | scikit-learn | `fuzzytool.integrations.sklearn` | `pip install fuzzytool[sklearn]` |
 | PyTorch | `fuzzytool.integrations.torch` | `pip install fuzzytool[torch]` |
+| SciPy | `fuzzytool.integrations.scipy` | `pip install fuzzytool[scipy]` |
+| Optuna | `fuzzytool.integrations.optuna` | `pip install fuzzytool[optuna]` |
 
-More (SciPy tuning, Optuna search, LLM agent tools) are on the roadmap.
+An LLM agent-tool integration is on the roadmap.
 
 ## pandas
 
@@ -163,4 +165,69 @@ net = nn.Sequential(
 )
 loss = nn.MSELoss()(net(torch.randn(16, 8)), torch.randn(16, 1))
 loss.backward()            # gradients flow through the membership functions
+```
+
+## SciPy
+
+`tune` refines the membership-function parameters of an existing Mamdani/TSK
+system to fit data, via `scipy.optimize.least_squares`. It mutates the system in
+place and returns SciPy's `OptimizeResult`. Shape validity is preserved every
+iteration (breakpoints stay ordered, widths stay positive), so the optimizer
+explores freely:
+
+```python
+import numpy as np
+import fuzzytool as fz
+from fuzzytool.integrations.scipy import tune
+
+rng = np.random.default_rng(0)
+X = rng.uniform(0, 10, size=(150, 1))
+y = np.sin(X[:, 0]) + 0.1 * X[:, 0]
+
+x = fz.Variable("x", (0, 10), terms=["lo", "mid", "hi"])
+sys = fz.TSK()
+sys.rule(x["lo"], 0.0)
+sys.rule(x["mid"], 0.5)
+sys.rule(x["hi"], 1.0)
+
+result = tune(sys, X, y, columns=["x"])
+result.cost        # SciPy OptimizeResult; the system now fits the data better
+```
+
+Only built-in shapes (`tri`, `trap`, `gauss`, `gbell`, `sigmoid`, `ramp_up`,
+`ramp_down`) are tuned; custom callables are left untouched. Pass
+`tune_outputs=False` to keep a Mamdani's output sets fixed, and forward any
+`least_squares` keyword (e.g. `max_nfev=200`).
+
+## Optuna
+
+Fuzzy systems have many discrete/continuous knobs. These helpers turn an Optuna
+`trial` into a configured system.
+
+`suggest_inference_spec` samples a Mamdani's connectives, implication and
+defuzzifier:
+
+```python
+import optuna
+from fuzzytool.integrations.optuna import suggest_inference_spec
+
+def objective(trial):
+    spec = suggest_inference_spec(trial)   # {tnorm, snorm, implication, defuzz}
+    sys = fz.Mamdani(**spec)
+    # ... add rules, evaluate on held-out data, return an error ...
+    return error
+```
+
+`tune_anfis` is a ready-made study that searches an ANFIS's `n_mf` and
+`learning_rate` and returns the best, refit model:
+
+```python
+from fuzzytool.integrations.optuna import tune_anfis
+
+x = np.linspace(0, 6, 120).reshape(-1, 1)
+y = np.sin(x[:, 0])
+
+best, study = tune_anfis(x, y, n_trials=20, seed=0)
+study.best_params      # e.g. {'n_mf': 4, 'learning_rate': 0.044}
+best.predict(x)        # predictions from the tuned model
 ```
