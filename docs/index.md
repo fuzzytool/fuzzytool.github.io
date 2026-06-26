@@ -33,6 +33,7 @@ sys(score=800, dti=10)   # -> a crisp risk premium
 
 - [Installation](installation.md)
 - [Getting started](getting-started.md)
+- [Tutorials](tutorials/risk-advisor.md) — end-to-end walkthroughs
 - [The guide](guide/membership.md)
 
 ## Author
