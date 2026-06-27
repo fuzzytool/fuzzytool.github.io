@@ -65,9 +65,10 @@ Each pulls its dependency in only on import, behind its own extra.
       `scipy.optimize.least_squares` (returns the `OptimizeResult`).
 - [x] **Optuna** (`[optuna]`): `suggest_inference_spec`, `suggest_anfis` and a
       ready-made `tune_anfis` study.
-- [ ] **Joblib / Dask** (`[parallel]`, `[dask]`): parallel batch inference / sweeps.
-- [ ] **Agents (LangChain/LangGraph)** (`[agents]`): an explainable LLM tool that
-      runs a system and reports which rules fired.
+- [x] **Joblib / Dask** (`[parallel]`, `[dask]`): `parallel_predict`,
+      `multi_start_cmeans`, `dask_predict`.
+- [x] **Agents (LangChain/LangGraph)** (`[agents]`): `explain` plus an
+      `inference_tool` LangChain tool that reports which rules fired.
 
 ## Ideas for later
 

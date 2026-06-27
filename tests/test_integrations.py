@@ -218,3 +218,64 @@ def test_tune_anfis_returns_fitted_model():
     assert best.history_                        # it was trained
     assert np.isfinite(study.best_value)
     assert best.n_mf == study.best_params["n_mf"]
+
+
+# --- Joblib / Dask integration ----------------------------------------------
+
+def test_parallel_predict_matches_predict():
+    pytest.importorskip("joblib")
+    from fuzzytool.integrations.parallel import parallel_predict
+
+    sys, *_ = datasets.credit_risk()
+    rng = np.random.default_rng(0)
+    X = np.column_stack([rng.uniform(300, 850, 200), rng.uniform(0, 50, 200)])
+    out = parallel_predict(sys, X, columns=["score", "dti"], n_jobs=2,
+                           backend="threading")
+    assert np.allclose(out, sys.predict(score=X[:, 0], dti=X[:, 1]))
+
+
+def test_multi_start_cmeans_picks_best():
+    pytest.importorskip("joblib")
+    from fuzzytool.integrations.parallel import multi_start_cmeans
+
+    X = datasets.make_blobs(seed=0)
+    best = multi_start_cmeans(X, c=3, n_starts=4, n_jobs=2, backend="threading")
+    single = fz.fuzzy_cmeans(X, c=3, seed=0)
+    assert best.objective <= single.objective + 1e-9      # no worse than seed 0
+    assert best.centers.shape == (3, X.shape[1])
+
+
+def test_dask_predict_matches_predict():
+    pytest.importorskip("dask")
+    from fuzzytool.integrations.parallel import dask_predict
+
+    sys, *_ = datasets.credit_risk()
+    X = np.array([[520.0, 42.0], [660.0, 30.0], [800.0, 10.0]])
+    out = dask_predict(sys, X, columns=["score", "dti"], n_chunks=2)
+    assert np.allclose(out, sys.predict(score=X[:, 0], dti=X[:, 1]))
+
+
+# --- Agents integration -----------------------------------------------------
+
+def test_explain_reports_fired_rules():
+    from fuzzytool.integrations.agents import explain
+
+    sys, *_ = datasets.credit_risk()
+    ex = explain(sys, score=520, dti=42)
+    assert np.isclose(ex["output"], sys(score=520, dti=42))
+    assert ex["fired_rules"]                                  # at least one fired
+    firings = [r["firing"] for r in ex["fired_rules"]]
+    assert all(f > 0 for f in firings)
+    assert firings == sorted(firings, reverse=True)           # strongest first
+
+
+def test_inference_tool_invocable():
+    pytest.importorskip("langchain_core")
+    from fuzzytool.integrations.agents import inference_tool
+
+    sys, *_ = datasets.credit_risk()
+    tool = inference_tool(sys, columns=["score", "dti"])
+    assert tool.name == "fuzzy_inference"
+    res = tool.invoke({"score": 800, "dti": 10})
+    assert "premium" in res and "fired_rules" in res
+    assert np.isclose(res["premium"], sys(score=800, dti=10))

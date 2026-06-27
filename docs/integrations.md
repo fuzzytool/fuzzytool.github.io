@@ -11,8 +11,8 @@ third-party dependency **only when imported**, so the base install stays light.
 | PyTorch | `fuzzytool.integrations.torch` | `pip install fuzzytool[torch]` |
 | SciPy | `fuzzytool.integrations.scipy` | `pip install fuzzytool[scipy]` |
 | Optuna | `fuzzytool.integrations.optuna` | `pip install fuzzytool[optuna]` |
-
-An LLM agent-tool integration is on the roadmap.
+| Joblib / Dask | `fuzzytool.integrations.parallel` | `pip install fuzzytool[parallel]` / `[dask]` |
+| LLM agents | `fuzzytool.integrations.agents` | `pip install fuzzytool[agents]` |
 
 ## pandas
 
@@ -230,4 +230,64 @@ y = np.sin(x[:, 0])
 best, study = tune_anfis(x, y, n_trials=20, seed=0)
 study.best_params      # e.g. {'n_mf': 4, 'learning_rate': 0.044}
 best.predict(x)        # predictions from the tuned model
+```
+
+## Joblib / Dask
+
+Spread embarrassingly-parallel workloads across cores or a Dask cluster.
+
+`parallel_predict` runs batch inference in row chunks with Joblib:
+
+```python
+import numpy as np
+from fuzzytool import datasets
+from fuzzytool.integrations.parallel import parallel_predict, multi_start_cmeans
+
+sys, *_ = datasets.credit_risk()
+X = np.column_stack([np.random.uniform(300, 850, 100_000),
+                     np.random.uniform(0, 50, 100_000)])
+
+parallel_predict(sys, X, columns=["score", "dti"], n_jobs=-1)   # array of premiums
+```
+
+`multi_start_cmeans` runs fuzzy c-means from many seeds in parallel and keeps the
+best (FCM is sensitive to initialization):
+
+```python
+X = datasets.make_blobs(seed=0)
+best = multi_start_cmeans(X, c=3, n_starts=8, n_jobs=-1)
+best.objective   # lowest objective across the restarts
+```
+
+The process backends pickle the system; built-in Mamdani/TSK systems pickle
+fine, but a TSK with `lambda` consequents needs `backend="threading"`. For a
+distributed scheduler, `dask_predict(sys, X, columns=...)` builds the same
+computation as a Dask graph (`pip install fuzzytool[dask]`).
+
+## LLM agents
+
+A fuzzy system is a great tool for an LLM agent: deterministic, bounded, and
+**self-explaining**. `explain` runs a system and reports which rules fired —
+no third-party dependency:
+
+```python
+from fuzzytool.integrations.agents import explain
+
+explain(sys, score=520, dti=42)
+# {'output': 10.16,
+#  'fired_rules': [{'rule': 'IF (score is poor or dti is high) THEN premium is high',
+#                   'firing': 0.8}]}
+```
+
+`inference_tool` wraps the system as a LangChain `StructuredTool` an agent can
+call (one float argument per input variable):
+
+```python
+from fuzzytool.integrations.agents import inference_tool
+
+tool = inference_tool(sys, columns=["score", "dti"])
+tool.invoke({"score": 800, "dti": 10})
+# {'premium': 1.91,
+#  'fired_rules': [{'rule': 'IF (score is good or score is excellent) THEN premium is low',
+#                   'firing': 0.4}]}
 ```

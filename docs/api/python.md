@@ -94,6 +94,14 @@ Generated from docstrings with `mkdocstrings`.
 
 ::: fuzzytool.integrations.optuna
 
+## Integrations — Joblib / Dask
+
+::: fuzzytool.integrations.parallel
+
+## Integrations — LLM agents
+
+::: fuzzytool.integrations.agents
+
 ## Datasets
 
 ::: fuzzytool.datasets
