@@ -55,6 +55,17 @@ s-norm, `~` the complement.
 | 4 | **Fuzzy clustering**: fuzzy c-means, Gustafson-Kessel, possibilistic | ✅ |
 | 5 | **ANFIS** (trainable TSK) + **F-transform** (direct/inverse) | ✅ |
 | 6 | Notebooks, JOSS `paper.md`, Zenodo DOI, PyPI release | ✅ |
+| 7 | **Ecosystem integrations**: pandas, scikit-learn, PyTorch, SciPy, Optuna, Joblib/Dask, LLM agents | ✅ |
+
+### v0.3.0
+
+- **Integrations** (`fuzzytool.integrations.*`, each behind its own extra):
+  **pandas** (DataFrame I/O), **scikit-learn** (`Fuzzifier`, regressors),
+  **PyTorch** (differentiable `FuzzyLayer`), **SciPy** (MF tuning), **Optuna**
+  (hyperparameter search), **Joblib/Dask** (parallel inference) and
+  **LLM agents** (explainable `inference_tool`).
+- **Tutorials** and an **Integrations** guide page, with rendered plots and
+  computed outputs throughout the docs.
 
 ### v0.2.0
 

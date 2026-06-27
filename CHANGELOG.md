@@ -6,6 +6,31 @@ All notable changes to this project are documented here. The format is based on
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-06-27
+
+### Added
+
+- **Ecosystem integrations** under `fuzzytool.integrations.*` — each behind its
+  own extra and importing its dependency only on use, so the core stays pure
+  NumPy:
+  - **pandas** (`[pandas]`): `predict_df`, `rules_dataframe`,
+    `memberships_dataframe`, `components_dataframe`.
+  - **scikit-learn** (`[sklearn]`): `Fuzzifier` transformer (crisp →
+    membership-degree features), `WangMendelRegressor`, `FuzzySystemRegressor`.
+  - **PyTorch** (`[torch]`): `FuzzyLayer`, a differentiable first-order TSK
+    `nn.Module` trainable by autograd and composable into a network.
+  - **SciPy** (`[scipy]`): `tune`, fitting a system's membership-function
+    parameters to data via `scipy.optimize.least_squares`.
+  - **Optuna** (`[optuna]`): `suggest_inference_spec`, `suggest_anfis`, and a
+    ready-made `tune_anfis` study.
+  - **Joblib / Dask** (`[parallel]`, `[dask]`): `parallel_predict`,
+    `multi_start_cmeans`, `dask_predict`.
+  - **LLM agents** (`[agents]`): `explain` (crisp output + fired rules) and
+    `inference_tool` (a LangChain `StructuredTool`).
+- Tutorials section (investment-risk advisor, ANFIS, Fuzzy TOPSIS, clustering)
+  and an Integrations guide page; rendered plots and computed results embedded
+  throughout the docs.
+
 ## [0.2.0] - 2026-06-24
 
 ### Added
