@@ -6,6 +6,20 @@ All notable changes to this project are documented here. The format is based on
 
 ## [Unreleased]
 
+## [0.5.0] - 2026-06-28
+
+### Added
+
+- **General type-2 (GT2) fuzzy sets** via the zSlices / alpha-plane
+  representation (`fuzzytool.type2.general`):
+  - `GeneralType2MF` — a GT2 set as a stack of IT2 z-slices; also exposes the
+    overall FOU (`lower`/`upper`), so it can stand in for its IT2 footprint.
+  - Constructors `gt2_from_it2`, `gt2_gauss_uncertain_mean`, `gt2_scale`
+    (triangular secondary membership peaking at the principal MF).
+  - `GeneralType2Mamdani` — inference as a z-weighted stack of IT2 Mamdani
+    runs, reusing the Karnik-Mendel machinery.
+  - `centroid_gt2` — zSlices type reduction of a single GT2 set.
+
 ## [0.4.0] - 2026-06-28
 
 ### Added

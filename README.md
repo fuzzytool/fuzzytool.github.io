@@ -57,6 +57,13 @@ s-norm, `~` the complement.
 | 6 | Notebooks, JOSS `paper.md`, Zenodo DOI, PyPI release | ✅ |
 | 7 | **Ecosystem integrations**: pandas, scikit-learn, PyTorch, SciPy, turboswarm, Optuna, Joblib/Dask, LLM agents | ✅ |
 
+### v0.5.0
+
+- **General type-2 (GT2) fuzzy sets** via the zSlices / alpha-plane
+  representation: `GeneralType2MF`, the `gt2_*` constructors,
+  `GeneralType2Mamdani` inference and `centroid_gt2` type reduction — reusing
+  the existing interval type-2 / Karnik-Mendel machinery.
+
 ### v0.4.0
 
 - **turboswarm integration:** gradient-free, global tuning of a fuzzy system's
