@@ -20,26 +20,17 @@ from typing import TYPE_CHECKING
 import numpy as np
 
 from .. import membership as mf
-from ._util import input_variable_names
+from ._util import (
+    MF_PENALTY,
+    input_variable_names,
+    sanitize_mf_params,
+    tunable_terms,
+)
 
 if TYPE_CHECKING:
     from scipy.optimize import OptimizeResult
 
     from ..inference import TSK, Mamdani
-
-# Per-shape repair applied before rebuilding, so every candidate is a valid MF.
-_PENALTY = 1e6
-
-
-def _sanitize(kind: str, params: list[float]) -> list[float]:
-    p = [float(v) for v in params]
-    if kind in ("tri", "trap", "ramp_up", "ramp_down"):
-        return sorted(p)                       # keep breakpoints ordered
-    if kind == "gauss":
-        return [p[0], abs(p[1]) or 1e-6]       # sigma > 0
-    if kind == "gbell":
-        return [abs(p[0]) or 1e-6, abs(p[1]) or 1e-6, p[2]]  # width, slope > 0
-    return p
 
 
 def _require_scipy():
@@ -51,38 +42,6 @@ def _require_scipy():
             "`pip install fuzzytool[scipy]`"
         ) from exc
     return least_squares
-
-
-def _tunable_terms(system, tune_outputs: bool):
-    """Variables and term names whose membership functions can be tuned."""
-    # Collect the Variable instances behind the rules' propositions.
-    seen: dict[int, object] = {}
-
-    def walk(node):
-        if hasattr(node, "variable"):
-            seen.setdefault(id(node.variable), node.variable)
-        if hasattr(node, "left"):
-            walk(node.left)
-            walk(node.right)
-        if hasattr(node, "operand"):
-            walk(node.operand)
-
-    for rule in system.rules:
-        walk(rule.antecedent)
-    variables = dict(seen)
-    if tune_outputs:
-        for out in getattr(system, "_outputs", {}).values():
-            variables.setdefault(id(out), out)
-
-    terms = []
-    for var in variables.values():
-        for term_name, membership in var.terms.items():
-            try:
-                spec = mf.to_dict(membership)
-            except TypeError:
-                continue                       # custom callable: skip
-            terms.append((var, term_name, spec["type"], list(spec["params"])))
-    return terms
 
 
 def tune(
@@ -115,7 +74,7 @@ def tune(
     names = list(columns) if columns is not None else input_variable_names(system)
     inputs = {name: X[:, j] for j, name in enumerate(names)}
 
-    terms = _tunable_terms(system, tune_outputs)
+    terms = tunable_terms(system, tune_outputs)
     if not terms:
         raise ValueError("the system has no tunable built-in membership functions")
 
@@ -130,13 +89,13 @@ def tune(
     def apply(p):
         for (var, term_name, kind, _params), (start, size) in zip(terms, slices):
             var[term_name] = mf.from_dict(
-                {"type": kind, "params": _sanitize(kind, p[start:start + size])})
+                {"type": kind, "params": sanitize_mf_params(kind, p[start:start + size])})
 
     def residual(p):
         apply(p)
         pred = np.asarray(system.predict(**inputs), dtype=float)
         r = pred - y
-        return np.where(np.isfinite(r), r, _PENALTY)
+        return np.where(np.isfinite(r), r, MF_PENALTY)
 
     result = least_squares(residual, p0, **least_squares_kwargs)
     apply(result.x)                            # leave the system at the best fit

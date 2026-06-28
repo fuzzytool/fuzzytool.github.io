@@ -63,6 +63,8 @@ Each pulls its dependency in only on import, behind its own extra.
       `nn.Module` trainable by autograd and composable into a network.
 - [x] **SciPy** (`[scipy]`): `tune` MF parameters to data via
       `scipy.optimize.least_squares` (returns the `OptimizeResult`).
+- [x] **turboswarm** (`[turboswarm]`): `tune` MF parameters with gradient-free
+      Particle Swarm Optimization (the sibling PSO library; returns `PsoResult`).
 - [x] **Optuna** (`[optuna]`): `suggest_inference_spec`, `suggest_anfis` and a
       ready-made `tune_anfis` study.
 - [x] **Joblib / Dask** (`[parallel]`, `[dask]`): `parallel_predict`,
@@ -74,7 +76,6 @@ Each pulls its dependency in only on import, behind its own extra.
 
 - Fuzzy cognitive maps (+ grey FCM).
 - General (non-interval) type-2; more defuzzifiers.
-- FIS tuning via metaheuristics (e.g. PSO).
 
 ## ⏳ Phase 6 — Release (v0.1.0)
 

@@ -90,6 +90,10 @@ Generated from docstrings with `mkdocstrings`.
 
 ::: fuzzytool.integrations.scipy
 
+## Integrations — turboswarm (PSO)
+
+::: fuzzytool.integrations.turboswarm
+
 ## Integrations — Optuna
 
 ::: fuzzytool.integrations.optuna

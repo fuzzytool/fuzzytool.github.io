@@ -10,6 +10,7 @@ third-party dependency **only when imported**, so the base install stays light.
 | scikit-learn | `fuzzytool.integrations.sklearn` | `pip install fuzzytool[sklearn]` |
 | PyTorch | `fuzzytool.integrations.torch` | `pip install fuzzytool[torch]` |
 | SciPy | `fuzzytool.integrations.scipy` | `pip install fuzzytool[scipy]` |
+| turboswarm | `fuzzytool.integrations.turboswarm` | `pip install fuzzytool[turboswarm]` |
 | Optuna | `fuzzytool.integrations.optuna` | `pip install fuzzytool[optuna]` |
 | Joblib / Dask | `fuzzytool.integrations.parallel` | `pip install fuzzytool[parallel]` / `[dask]` |
 | LLM agents | `fuzzytool.integrations.agents` | `pip install fuzzytool[agents]` |
@@ -198,6 +199,38 @@ Only built-in shapes (`tri`, `trap`, `gauss`, `gbell`, `sigmoid`, `ramp_up`,
 `ramp_down`) are tuned; custom callables are left untouched. Pass
 `tune_outputs=False` to keep a Mamdani's output sets fixed, and forward any
 `least_squares` keyword (e.g. `max_nfev=200`).
+
+## turboswarm
+
+[turboswarm](https://pypi.org/project/turboswarm/) is fuzzytool's sibling
+Particle Swarm Optimization library. Its `tune` is the **gradient-free, global**
+counterpart of the SciPy one: slower, but it escapes poor local optima and needs
+no derivatives — a good fit for the rugged error surfaces fuzzy rule bases
+produce. Same call shape, returns turboswarm's `PsoResult`:
+
+```python
+import numpy as np
+import fuzzytool as fz
+from fuzzytool.integrations.turboswarm import tune
+
+rng = np.random.default_rng(0)
+X = rng.uniform(0, 10, size=(150, 1))
+y = np.sin(X[:, 0]) + 0.1 * X[:, 0]
+
+x = fz.Variable("x", (0, 10), terms=["lo", "mid", "hi"])
+sys = fz.TSK()
+sys.rule(x["lo"], 0.0)
+sys.rule(x["mid"], 0.5)
+sys.rule(x["hi"], 1.0)
+
+result = tune(sys, X, y, columns=["x"], n_particles=20, max_iter=40, seed=0)
+result.best_value     # PsoResult; the system now fits the data better
+```
+
+Each parameter is searched within `±margin × universe` around its current value
+(`margin=0.5` by default); shape validity is enforced every evaluation. Any
+`turboswarm.minimize` keyword (`topology`, `patience`, `max_time`, …) is
+forwarded.
 
 ## Optuna
 

@@ -177,6 +177,26 @@ def test_scipy_tune_reduces_error():
     assert hasattr(res, "x") and hasattr(res, "cost")
 
 
+def test_turboswarm_tune_reduces_error():
+    pytest.importorskip("turboswarm")
+    from fuzzytool.integrations.turboswarm import tune
+
+    rng = np.random.default_rng(0)
+    X = rng.uniform(0, 10, size=(150, 1))
+    y = (np.sin(X[:, 0]) + 0.1 * X[:, 0]).ravel()
+    x = fz.Variable("x", (0, 10), terms=["lo", "mid", "hi"])
+    sys = fz.TSK()
+    sys.rule(x["lo"], 0.0)
+    sys.rule(x["mid"], 0.5)
+    sys.rule(x["hi"], 1.0)
+
+    before = np.sqrt(np.nanmean((sys.predict(x=X[:, 0]) - y) ** 2))
+    res = tune(sys, X, y, columns=["x"], n_particles=20, max_iter=40, seed=0)
+    after = np.sqrt(np.nanmean((sys.predict(x=X[:, 0]) - y) ** 2))
+    assert after < before
+    assert hasattr(res, "best_position") and hasattr(res, "best_value")
+
+
 def test_scipy_tune_keeps_membership_valid():
     pytest.importorskip("scipy")
     from fuzzytool import membership as mf
