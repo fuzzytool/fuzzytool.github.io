@@ -29,7 +29,12 @@ from .serialize import load, save
 from .sets import Variable
 from .type2 import (
     IT2TSK,
+    GeneralType2Mamdani,
+    GeneralType2MF,
     IT2Mamdani,
+    gt2_from_it2,
+    gt2_gauss_uncertain_mean,
+    gt2_scale,
     it2,
     it2_gauss_uncertain_mean,
     it2_gauss_uncertain_std,
@@ -51,6 +56,9 @@ __all__ = [
     # interval type-2
     "IT2Mamdani", "IT2TSK",
     "it2", "it2_scale", "it2_gauss_uncertain_mean", "it2_gauss_uncertain_std",
+    # general type-2
+    "GeneralType2Mamdani", "GeneralType2MF",
+    "gt2_from_it2", "gt2_gauss_uncertain_mean", "gt2_scale",
     # fuzzy clustering
     "fuzzy_cmeans", "gustafson_kessel", "possibilistic_cmeans",
     # learning & approximation

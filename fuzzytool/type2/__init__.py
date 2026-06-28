@@ -9,6 +9,14 @@ IT2 rules reuse the very same operator syntax as type-1 rules (``|``, ``&``,
 tree and collapse the result with Karnik-Mendel type reduction.
 """
 
+from .general import (
+    GeneralType2Mamdani,
+    GeneralType2MF,
+    centroid_gt2,
+    gt2_from_it2,
+    gt2_gauss_uncertain_mean,
+    gt2_scale,
+)
 from .inference import IT2TSK, IT2Mamdani
 from .reduction import centroid_it2, karnik_mendel, km_endpoint
 from .sets import (
@@ -24,4 +32,6 @@ __all__ = [
     "it2", "it2_scale", "it2_gauss_uncertain_mean", "it2_gauss_uncertain_std",
     "IT2Mamdani", "IT2TSK",
     "karnik_mendel", "km_endpoint", "centroid_it2",
+    "GeneralType2MF", "GeneralType2Mamdani", "centroid_gt2",
+    "gt2_from_it2", "gt2_gauss_uncertain_mean", "gt2_scale",
 ]

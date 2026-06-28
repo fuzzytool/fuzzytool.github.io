@@ -72,16 +72,26 @@ Each pulls its dependency in only on import, behind its own extra.
 - [x] **Agents (LangChain/LangGraph)** (`[agents]`): `explain` plus an
       `inference_tool` LangChain tool that reports which rules fired.
 
+## ✅ General type-2 (zSlices)
+
+- [x] `GeneralType2MF` via the zSlices / alpha-plane representation (a stack of
+      IT2 slices; also exposes the overall FOU, so it degrades to IT2).
+- [x] Constructors `gt2_from_it2`, `gt2_gauss_uncertain_mean`, `gt2_scale`
+      (triangular secondary MF).
+- [x] `GeneralType2Mamdani` (z-weighted stack of IT2 Mamdani inferences) and
+      `centroid_gt2` zSlices type reduction.
+
 ## Ideas for later
 
 - Fuzzy cognitive maps (+ grey FCM).
-- General (non-interval) type-2; more defuzzifiers.
+- More defuzzifiers; non-triangular GT2 secondary MFs.
 
 ## ⏳ Phase 6 — Release (v0.1.0)
 
 - [x] Example notebooks (`notebooks/`) and a comparison page vs scikit-fuzzy.
 - [x] JOSS `paper.md`; Zenodo metadata (`.zenodo.json`) and a citing/releasing page.
 - [x] GitHub Pages live (`https://fuzzytool.github.io`).
-- [ ] Register the PyPI trusted publisher, then tag `v0.1.0` to publish (the
-      `release-pypi.yml` workflow is ready).
-- [ ] Enable the Zenodo GitHub integration and cut a release to mint a DOI.
+- [x] PyPI trusted publisher registered; tagging a version runs `release-pypi.yml`
+      (published 0.1.0 → 0.4.0 via OIDC, no stored token).
+- [x] Zenodo GitHub integration; each GitHub release is archived with a DOI
+      (`10.5281/zenodo.20836712`).

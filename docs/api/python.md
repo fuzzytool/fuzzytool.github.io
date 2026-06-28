@@ -62,6 +62,10 @@ Generated from docstrings with `mkdocstrings`.
 
 ::: fuzzytool.type2.reduction
 
+## General type-2 (zSlices)
+
+::: fuzzytool.type2.general
+
 ## Fuzzy clustering
 
 ::: fuzzytool.cluster

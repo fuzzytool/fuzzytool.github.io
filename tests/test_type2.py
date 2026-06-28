@@ -75,3 +75,59 @@ def test_type1_and_it2_terms_mix_in_one_antecedent():
     lo, hi = (a["hi"] & b["hi"]).eval_interval({"a": 0.8, "b": 1.0},
                                                fz.norms.t_min, fz.norms.s_max)
     assert lo <= hi
+
+
+# --- general type-2 (zSlices) -----------------------------------------------
+
+def test_gt2_exposes_footprint_and_slices():
+    g = fz.gt2_gauss_uncertain_mean(740, 780, 50, n_slices=5)
+    x = np.linspace(300, 850, 200)
+    # degrades to its IT2 footprint via lower/upper
+    assert np.all(g.lower(x) <= g.upper(x) + 1e-12)
+    assert g.n_slices == 5 and len(g.zlevels) == 5
+    # the z=1 slice (last) collapses toward the principal MF: near-zero FOU
+    top = g.slice(g.n_slices - 1)
+    assert np.max(top.upper(x) - top.lower(x)) < 1e-9
+    # the lowest slice spans (almost) the full footprint
+    bottom = g.slice(0)
+    assert np.max(bottom.upper(x) - bottom.lower(x)) > 0.0
+
+
+def test_gt2_mamdani_runs_and_is_bounded():
+    score = fz.Variable("score", (300, 850))
+    score["good"] = fz.gt2_gauss_uncertain_mean(740, 780, 50)
+    score["poor"] = fz.gt2_gauss_uncertain_mean(420, 480, 70)
+    premium = fz.Variable("premium", (0, 12))
+    premium["low"] = fz.gt2_gauss_uncertain_mean(1.5, 2.5, 1.5)
+    premium["high"] = fz.gt2_gauss_uncertain_mean(9.5, 10.5, 1.5)
+
+    sys = fz.GeneralType2Mamdani()
+    sys.rule(score["good"], premium["low"])
+    sys.rule(score["poor"], premium["high"])
+    # a good score gives a low premium, a poor score a high one
+    assert sys(score=780) < sys(score=450)
+    assert 0.0 <= sys(score=780) <= 12.0
+
+
+def test_gt2_does_not_mutate_terms_after_call():
+    score = fz.Variable("score", (300, 850))
+    score["good"] = fz.gt2_gauss_uncertain_mean(740, 780, 50)
+    premium = fz.Variable("premium", (0, 12))
+    premium["low"] = fz.gt2_gauss_uncertain_mean(1.5, 2.5, 1.5)
+    sys = fz.GeneralType2Mamdani()
+    sys.rule(score["good"], premium["low"])
+    sys(score=760)
+    # terms are restored to the original GT2 objects (not left as a slice)
+    from fuzzytool.type2 import GeneralType2MF
+    assert isinstance(score.terms["good"], GeneralType2MF)
+    assert isinstance(premium.terms["low"], GeneralType2MF)
+
+
+def test_centroid_gt2_matches_it2_order():
+    from fuzzytool.type2 import centroid_gt2
+    g = fz.gt2_gauss_uncertain_mean(740, 780, 50, n_slices=6)
+    uni = np.linspace(300, 850, 400)
+    c_gt2 = centroid_gt2(g, uni)
+    c_it2 = sum(centroid_it2(g, uni)) / 2.0
+    assert 700 < c_gt2 < 820
+    assert abs(c_gt2 - c_it2) < 20          # close, but GT2 weights the principal MF
