@@ -8,7 +8,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "fuzzytool"
-version = "0.3.0"
+version = "0.4.0"
 description = "A clean, extensible fuzzy-logic toolkit in pure Python + NumPy"
 readme = "README.md"
 requires-python = ">=3.9"

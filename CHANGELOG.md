@@ -6,6 +6,22 @@ All notable changes to this project are documented here. The format is based on
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-06-28
+
+### Added
+
+- **turboswarm integration** (`fuzzytool.integrations.turboswarm`, extra
+  `[turboswarm]`): `tune` fits a system's built-in membership-function
+  parameters to data with the sibling library's gradient-free, global Particle
+  Swarm Optimization — the metaheuristic counterpart of the SciPy least-squares
+  tuner. Returns turboswarm's `PsoResult`.
+
+### Changed
+
+- Shared membership-function tuning helpers (`sanitize_mf_params`,
+  `tunable_terms`, `MF_PENALTY`) moved to `fuzzytool.integrations._util` and
+  reused by both the SciPy and turboswarm tuners.
+
 ## [0.3.0] - 2026-06-27
 
 ### Added

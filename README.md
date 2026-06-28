@@ -55,7 +55,13 @@ s-norm, `~` the complement.
 | 4 | **Fuzzy clustering**: fuzzy c-means, Gustafson-Kessel, possibilistic | ✅ |
 | 5 | **ANFIS** (trainable TSK) + **F-transform** (direct/inverse) | ✅ |
 | 6 | Notebooks, JOSS `paper.md`, Zenodo DOI, PyPI release | ✅ |
-| 7 | **Ecosystem integrations**: pandas, scikit-learn, PyTorch, SciPy, Optuna, Joblib/Dask, LLM agents | ✅ |
+| 7 | **Ecosystem integrations**: pandas, scikit-learn, PyTorch, SciPy, turboswarm, Optuna, Joblib/Dask, LLM agents | ✅ |
+
+### v0.4.0
+
+- **turboswarm integration:** gradient-free, global tuning of a fuzzy system's
+  membership functions with Particle Swarm Optimization
+  (`integrations.turboswarm.tune`) — the metaheuristic sibling of the SciPy tuner.
 
 ### v0.3.0
 
