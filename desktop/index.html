@@ -3,30 +3,189 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>fuzzytool — credit-risk advisor</title>
+    <title>fuzzytool studio</title>
     <style>
-      :root { color-scheme: light dark; font-family: system-ui, sans-serif; }
-      body { margin: 0; padding: 1.5rem; max-width: 720px; margin: 0 auto; }
-      h1 { font-size: 1.3rem; margin: 0 0 0.25rem; }
-      p.sub { margin: 0 0 1.25rem; opacity: 0.7; font-size: 0.9rem; }
-      .control { margin: 0.75rem 0; }
-      .control label { display: flex; justify-content: space-between; font-size: 0.9rem; }
-      .control input[type="range"] { width: 100%; }
-      .output { font-size: 2rem; font-weight: 600; margin: 0.5rem 0; }
-      .rules { font-size: 0.85rem; opacity: 0.85; min-height: 2.5rem; }
-      .rules code { font-family: ui-monospace, monospace; }
-      canvas { width: 100%; height: 260px; border-radius: 8px; margin-top: 1rem; }
-      .legend { font-size: 0.75rem; opacity: 0.6; display: flex; justify-content: space-between; }
+      :root {
+        --bg: #0f1117;
+        --panel: #171a23;
+        --panel-2: #1e2230;
+        --border: #2a2f3e;
+        --text: #e7e9ee;
+        --muted: #9aa3b2;
+        --accent: #7c6cff;
+        --accent2: #2dd4bf;
+        --shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
+        --radius: 14px;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+        background: radial-gradient(1200px 600px at 80% -10%, #1b2030 0%, var(--bg) 55%);
+        color: var(--text);
+        min-height: 100vh;
+      }
+      header {
+        display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;
+        padding: 1.1rem 1.5rem;
+        border-bottom: 1px solid var(--border);
+        backdrop-filter: blur(6px);
+      }
+      .brand { display: flex; align-items: baseline; gap: 0.6rem; margin-right: auto; }
+      .brand h1 {
+        font-size: 1.15rem; margin: 0; font-weight: 700; letter-spacing: 0.2px;
+        background: linear-gradient(90deg, var(--accent), var(--accent2));
+        -webkit-background-clip: text; background-clip: text; color: transparent;
+      }
+      .brand span { color: var(--muted); font-size: 0.82rem; }
+      .field { display: flex; flex-direction: column; gap: 0.2rem; }
+      .field label { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.6px; color: var(--muted); }
+      select {
+        appearance: none; background: var(--panel-2); color: var(--text);
+        border: 1px solid var(--border); border-radius: 9px; padding: 0.5rem 2rem 0.5rem 0.7rem;
+        font-size: 0.9rem; cursor: pointer; min-width: 190px;
+        background-image: linear-gradient(45deg, transparent 50%, var(--muted) 50%),
+                          linear-gradient(135deg, var(--muted) 50%, transparent 50%);
+        background-position: calc(100% - 18px) 53%, calc(100% - 13px) 53%;
+        background-size: 5px 5px, 5px 5px; background-repeat: no-repeat;
+      }
+      .sysdesc { padding: 0.6rem 1.5rem 0; color: var(--muted); font-size: 0.88rem; }
+      main {
+        display: grid; grid-template-columns: minmax(300px, 1fr) minmax(360px, 1.4fr);
+        gap: 1.1rem; padding: 1.1rem 1.5rem 2rem; align-items: start;
+      }
+      @media (max-width: 880px) { main { grid-template-columns: 1fr; } }
+      .col { display: flex; flex-direction: column; gap: 1.1rem; }
+      .card {
+        background: linear-gradient(180deg, var(--panel) 0%, #14171f 100%);
+        border: 1px solid var(--border); border-radius: var(--radius);
+        padding: 1.1rem 1.15rem; box-shadow: var(--shadow);
+      }
+      .card h2 {
+        margin: 0 0 0.9rem; font-size: 0.72rem; text-transform: uppercase;
+        letter-spacing: 1px; color: var(--muted); font-weight: 600;
+      }
+      .control { margin-bottom: 1rem; }
+      .control:last-child { margin-bottom: 0; }
+      .control .row { display: flex; justify-content: space-between; margin-bottom: 0.35rem; }
+      .control .name { font-size: 0.92rem; font-weight: 600; }
+      .control .val { font-variant-numeric: tabular-nums; color: var(--accent2); font-weight: 600; }
+      input[type="range"] { -webkit-appearance: none; width: 100%; height: 6px; border-radius: 4px;
+        background: var(--panel-2); outline: none; }
+      input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none; width: 18px; height: 18px; border-radius: 50%;
+        background: linear-gradient(135deg, var(--accent), var(--accent2));
+        cursor: pointer; box-shadow: 0 0 0 4px rgba(124, 108, 255, 0.18); }
+      .gauge { position: relative; height: 12px; border-radius: 6px; background: var(--panel-2);
+        overflow: hidden; margin-top: 0.6rem; }
+      .gauge > span { position: absolute; left: 0; top: 0; bottom: 0;
+        background: linear-gradient(90deg, var(--accent), var(--accent2)); transition: width 0.15s ease; }
+      .bignum { font-size: 2.4rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+      .bignum small { font-size: 1rem; color: var(--muted); font-weight: 500; margin-left: 0.35rem; }
+      .rule { margin-bottom: 0.7rem; }
+      .rule .txt { font-family: ui-monospace, "SF Mono", monospace; font-size: 0.78rem; color: #cdd3df; }
+      .rule .bar { height: 5px; border-radius: 3px; background: var(--panel-2); margin-top: 0.3rem; }
+      .rule .bar > span { display: block; height: 100%; border-radius: 3px;
+        background: linear-gradient(90deg, var(--accent), var(--accent2)); }
+      .muted { color: var(--muted); font-size: 0.85rem; }
+      .mfgrid { display: grid; gap: 0.8rem; }
+      .mf .cap { display: flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 0.2rem; }
+      .mf .cap .legend { display: flex; gap: 0.6rem; flex-wrap: wrap; }
+      .mf .cap .legend i { display: inline-flex; align-items: center; gap: 0.25rem; color: var(--muted); font-style: normal; font-size: 0.72rem; }
+      .mf .cap .legend i::before { content: ""; width: 9px; height: 9px; border-radius: 2px; background: currentColor; }
+      .mf svg { width: 100%; height: auto; display: block; }
+      .surface-head { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.7rem; }
+      .surface-head .field { flex-direction: row; align-items: center; gap: 0.35rem; }
+      .surface-wrap { display: flex; gap: 0.7rem; align-items: stretch; }
+      canvas { flex: 1; width: 100%; border-radius: 10px; border: 1px solid var(--border); }
+      .cbar { display: flex; flex-direction: column; align-items: center; font-size: 0.7rem; color: var(--muted); }
+      .cbar .scale { width: 12px; flex: 1; border-radius: 4px; margin: 0.2rem 0; }
+      .axis { display: flex; justify-content: space-between; color: var(--muted); font-size: 0.72rem; margin-top: 0.3rem; }
+      .btn { border: 1px solid var(--border); border-radius: 9px; padding: 0.5rem 0.85rem;
+        font-size: 0.85rem; cursor: pointer; background: var(--panel-2); color: var(--text); }
+      .btn.primary { background: linear-gradient(135deg, var(--accent), var(--accent2)); border: none; color: #0b0d12; font-weight: 600; }
+      .btn.ghost:hover, .btn.primary:hover { filter: brightness(1.08); }
+      /* editor modal */
+      .modal-overlay { position: fixed; inset: 0; background: rgba(5, 7, 12, 0.66);
+        backdrop-filter: blur(3px); display: flex; align-items: flex-start; justify-content: center;
+        padding: 3vh 1rem; z-index: 50; overflow: auto; }
+      .modal { width: min(820px, 100%); background: var(--panel); border: 1px solid var(--border);
+        border-radius: var(--radius); box-shadow: var(--shadow); display: flex; flex-direction: column; }
+      .modal-head { display: flex; gap: 0.6rem; align-items: center; padding: 1rem 1.1rem; border-bottom: 1px solid var(--border); }
+      .modal-head .title { flex: 1; background: var(--panel-2); border: 1px solid var(--border);
+        color: var(--text); border-radius: 8px; padding: 0.5rem 0.7rem; font-size: 1rem; font-weight: 600; }
+      .modal-body { padding: 1rem 1.1rem; max-height: 64vh; overflow: auto; }
+      .modal-body h3 { font-size: 0.74rem; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin: 1.1rem 0 0.6rem; }
+      .modal-body h3:first-child { margin-top: 0; }
+      .modal-foot { display: flex; gap: 0.6rem; align-items: center; padding: 0.9rem 1.1rem; border-top: 1px solid var(--border); }
+      .modal-foot .err { color: #f87171; font-size: 0.82rem; margin-right: auto; }
+      .ed-card { background: var(--panel-2); border: 1px solid var(--border); border-radius: 10px; padding: 0.7rem 0.8rem; margin-bottom: 0.7rem; }
+      .ed-row { display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; margin-bottom: 0.5rem; }
+      .ed-row label, .clause, .termrow { font-size: 0.8rem; color: var(--muted); }
+      .modal input, .modal select { background: var(--bg); border: 1px solid var(--border); color: var(--text);
+        border-radius: 7px; padding: 0.35rem 0.5rem; font-size: 0.85rem; }
+      .modal .num { width: 74px; }
+      .modal .v-name, .modal .t-name { width: 120px; font-weight: 600; color: var(--text); }
+      .termrow { display: flex; gap: 0.45rem; align-items: center; margin: 0.35rem 0; flex-wrap: wrap; }
+      .termrow .params { display: flex; gap: 0.3rem; }
+      .clause { display: flex; gap: 0.45rem; align-items: center; margin: 0.35rem 0; }
+      .clause .is, .ed-row .is { color: var(--muted); }
+      .chk { display: flex; align-items: center; gap: 0.25rem; }
+      .icon { background: transparent; border: none; color: var(--muted); cursor: pointer; font-size: 0.9rem; }
+      .icon:hover { color: #f87171; }
+      .add { background: transparent; border: 1px dashed var(--border); color: var(--muted);
+        border-radius: 8px; padding: 0.35rem 0.7rem; font-size: 0.8rem; cursor: pointer; }
+      .add:hover { color: var(--text); border-color: var(--accent); }
     </style>
   </head>
   <body>
-    <h1>Credit-risk advisor</h1>
-    <p class="sub">A fuzzytool Mamdani system running in a Python sidecar.</p>
-    <div id="controls"></div>
-    <div class="output" id="output">—</div>
-    <div class="rules" id="rules"></div>
-    <canvas id="surface" width="600" height="260"></canvas>
-    <div class="legend"><span id="xlabel"></span><span id="ylabel"></span></div>
+    <header>
+      <div class="brand"><h1>fuzzytool studio</h1><span>interactive inference</span></div>
+      <div class="field">
+        <label for="system">System</label>
+        <select id="system"></select>
+      </div>
+      <div class="field">
+        <label for="defuzz">Defuzzifier</label>
+        <select id="defuzz"></select>
+      </div>
+      <div class="field"><label>&nbsp;</label>
+        <div style="display:flex; gap:0.4rem">
+          <button class="btn ghost" id="newbtn">+ New</button>
+          <button class="btn primary" id="editbtn">✎ Edit</button>
+        </div>
+      </div>
+    </header>
+    <div class="sysdesc" id="sysdesc"></div>
+    <main>
+      <div class="col">
+        <div class="card"><h2>Inputs</h2><div id="controls"></div></div>
+        <div class="card">
+          <h2>Output</h2>
+          <div class="bignum" id="output">—</div>
+          <div class="gauge"><span id="gauge"></span></div>
+        </div>
+        <div class="card"><h2>Fired rules</h2><div id="rules" class="muted"></div></div>
+      </div>
+      <div class="col">
+        <div class="card">
+          <h2>Membership functions</h2>
+          <div class="mfgrid" id="mfgrid"></div>
+        </div>
+        <div class="card">
+          <div class="surface-head">
+            <h2 style="margin:0">Control surface</h2>
+            <div style="margin-left:auto" class="field"><label>x</label><select id="surfx"></select></div>
+            <div class="field"><label>y</label><select id="surfy"></select></div>
+          </div>
+          <div class="surface-wrap">
+            <canvas id="surface" width="520" height="300"></canvas>
+            <div class="cbar"><span id="cmax">–</span><div class="scale" id="cscale"></div><span id="cmin">–</span></div>
+          </div>
+          <div class="axis"><span id="axx"></span><span id="axy"></span></div>
+        </div>
+      </div>
+    </main>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>
