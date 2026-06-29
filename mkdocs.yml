@@ -56,6 +56,7 @@ nav:
       - Defuzzification: guide/defuzzification.md
       - Visualization: guide/visualization.md
   - Integrations: integrations.md
+  - Desktop app: desktop.md
   - Extending: extending.md
   - Citing & releasing: citing.md
   - API reference: api/python.md
