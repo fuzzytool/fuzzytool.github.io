@@ -50,6 +50,10 @@ Issues = "https://github.com/fuzzytool/fuzzytool.github.io/issues"
 [tool.hatch.build.targets.wheel]
 packages = ["fuzzytool"]
 
+[tool.hatch.build.targets.sdist]
+# The Tauri desktop prototype is not part of the Python distribution.
+exclude = ["desktop"]
+
 [tool.pytest.ini_options]
 addopts = "--doctest-modules --doctest-glob='*.md'"
 testpaths = ["tests", "fuzzytool"]

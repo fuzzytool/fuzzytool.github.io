@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>fuzzytool — credit-risk advisor</title>
+    <style>
+      :root { color-scheme: light dark; font-family: system-ui, sans-serif; }
+      body { margin: 0; padding: 1.5rem; max-width: 720px; margin: 0 auto; }
+      h1 { font-size: 1.3rem; margin: 0 0 0.25rem; }
+      p.sub { margin: 0 0 1.25rem; opacity: 0.7; font-size: 0.9rem; }
+      .control { margin: 0.75rem 0; }
+      .control label { display: flex; justify-content: space-between; font-size: 0.9rem; }
+      .control input[type="range"] { width: 100%; }
+      .output { font-size: 2rem; font-weight: 600; margin: 0.5rem 0; }
+      .rules { font-size: 0.85rem; opacity: 0.85; min-height: 2.5rem; }
+      .rules code { font-family: ui-monospace, monospace; }
+      canvas { width: 100%; height: 260px; border-radius: 8px; margin-top: 1rem; }
+      .legend { font-size: 0.75rem; opacity: 0.6; display: flex; justify-content: space-between; }
+    </style>
+  </head>
+  <body>
+    <h1>Credit-risk advisor</h1>
+    <p class="sub">A fuzzytool Mamdani system running in a Python sidecar.</p>
+    <div id="controls"></div>
+    <div class="output" id="output">—</div>
+    <div class="rules" id="rules"></div>
+    <canvas id="surface" width="600" height="260"></canvas>
+    <div class="legend"><span id="xlabel"></span><span id="ylabel"></span></div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
