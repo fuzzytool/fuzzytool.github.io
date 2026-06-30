@@ -52,6 +52,13 @@ class Mamdani:
         self.defuzz = get_defuzzifier(defuzz)
         self.rules: list[Rule] = []
         self._outputs: dict[str, Variable] = {}
+        # Cache of consequent term shapes over their output universe, keyed by
+        # id(membership function). The shape depends only on (term, universe),
+        # not on the inputs, so it is stable across calls. Keying by id(mf)
+        # auto-invalidates when a term is replaced via ``Variable.__setitem__``
+        # (a new callable gets a new id); mutating an MF object in place is not
+        # part of the API and would leave a stale entry.
+        self._shape_cache: dict[int, np.ndarray] = {}
         # Original (string) spec, kept for serialization.
         self._spec = {"tnorm": tnorm, "snorm": snorm, "implication": implication,
                       "aggregation": aggregation, "defuzz": defuzz}
@@ -64,6 +71,22 @@ class Mamdani:
         self.rules.append(Rule(antecedent, consequent, weight))
         self._outputs[consequent.variable.name] = consequent.variable
         return self
+
+    def _consequent_shape(self, var: Variable, term: str) -> np.ndarray:
+        """Membership of ``term`` over ``var``'s universe, memoized by id(mf)."""
+        membership = var.terms[term]
+        key = id(membership)
+        shape = self._shape_cache.get(key)
+        if shape is None:
+            shape = np.asarray(membership(var.universe), dtype=float)
+            self._shape_cache[key] = shape
+        return shape
+
+    def _imply(self, firing, shape):
+        """Shape a consequent set by a firing strength (clip or scale)."""
+        if self.implication == "min":
+            return np.minimum(firing, shape)
+        return firing * shape  # prod
 
     def __call__(self, **inputs: float):
         """Run inference. Returns a float for one output, else a dict by name."""
@@ -78,11 +101,8 @@ class Mamdani:
             if firing <= 0.0:
                 continue
             var = r.consequent.variable
-            shape = var.terms[r.consequent.term](var.universe)
-            if self.implication == "min":
-                shaped = np.minimum(firing, shape)
-            else:  # prod
-                shaped = firing * shape
+            shape = self._consequent_shape(var, r.consequent.term)
+            shaped = self._imply(firing, shape)
             agg[var.name] = self.aggregation(agg[var.name], shaped)
 
         crisp = {name: self.defuzz(self._outputs[name].universe, y)
@@ -108,11 +128,8 @@ class Mamdani:
                     continue
                 firing = np.asarray(r.antecedent.eval(arrs, self.tnorm, self.snorm),
                                     dtype=float) * r.weight
-                shape = var.terms[r.consequent.term](var.universe)
-                if self.implication == "min":
-                    shaped = np.minimum(firing[:, None], shape[None, :])
-                else:
-                    shaped = firing[:, None] * shape[None, :]
+                shape = self._consequent_shape(var, r.consequent.term)
+                shaped = self._imply(firing[:, None], shape[None, :])
                 agg = self.aggregation(agg, shaped)
             x = var.universe
             out[name] = np.array([self.defuzz(x, agg[i]) for i in range(n)])

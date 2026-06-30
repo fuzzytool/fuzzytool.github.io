@@ -47,3 +47,29 @@ def test_centroid_handles_no_rule_fired():
     # An output universe sampled symmetrically falls back to its midpoint.
     x = np.linspace(0, 12, 501)
     assert fz.defuzz.centroid(x, np.zeros_like(x)) == pytest.approx(6.0, abs=0.1)
+
+
+def test_mamdani_caches_consequent_shapes_and_invalidates_on_replace():
+    sys, _, _, premium = datasets.credit_risk()
+    sys._shape_cache.clear()
+
+    # Calling twice reuses cached shapes (same array objects, never recomputed).
+    sys(score=650, dti=25)
+    cached = {k: id(v) for k, v in sys._shape_cache.items()}
+    assert cached  # at least one consequent term was shaped
+    sys(score=650, dti=25)
+    for key, arr_id in cached.items():
+        assert id(sys._shape_cache[key]) == arr_id
+
+    # predict shares the cache and agrees with scalar calls.
+    pts = [(800, 10), (520, 42), (650, 25)]
+    batch = sys.predict(score=np.array([s for s, _ in pts]),
+                        dti=np.array([d for _, d in pts]))
+    scalar = np.array([sys(score=s, dti=d) for s, d in pts])
+    assert np.allclose(batch, scalar)
+
+    # Replacing the consequent term that fires (new MF id) invalidates the
+    # cache: for these inputs only the "medium" rule fires.
+    before = sys(score=650, dti=25)
+    premium["medium"] = fz.tri(7, 9, 11)
+    assert sys(score=650, dti=25) != before
