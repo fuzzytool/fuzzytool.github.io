@@ -5,8 +5,8 @@ type: software
 authors:
   - family-names: Salmeron
     given-names: Jose L.
-version: 0.5.0
-date-released: 2026-06-28
+version: 0.5.1
+date-released: 2026-07-07
 doi: 10.5281/zenodo.20836712
 license: MIT
 repository-code: "https://github.com/fuzzytool/fuzzytool.github.io"

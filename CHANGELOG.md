@@ -6,6 +6,8 @@ All notable changes to this project are documented here. The format is based on
 
 ## [Unreleased]
 
+## [0.5.1] - 2026-07-07
+
 ### Fixed
 
 - **`sigmoid` membership function** is now numerically stable at extreme
