@@ -38,3 +38,16 @@ def test_invalid_params_raise():
         fz.tri(5, 0, 10)
     with pytest.raises(ValueError):
         fz.gauss(0, 0)
+
+
+def test_sigmoid_is_stable_at_extreme_arguments():
+    s = fz.sigmoid(2.0, 5.0)
+    with np.errstate(over="raise"):  # overflow in exp would raise here
+        y = s(np.array([-1e6, 0.0, 1e6]))
+    assert np.all(np.isfinite(y)) and np.all((y >= 0) & (y <= 1))
+    assert y[0] == 0.0 and y[-1] == 1.0
+    # Still matches the plain logistic in the numerically safe range.
+    x = np.linspace(-20, 30, 500)
+    assert np.allclose(s(x), 1.0 / (1.0 + np.exp(-2.0 * (x - 5.0))), atol=1e-12)
+    # Scalar input yields a scalar-like (0-d) result.
+    assert np.ndim(s(5.0)) == 0

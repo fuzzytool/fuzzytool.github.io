@@ -6,6 +6,24 @@ All notable changes to this project are documented here. The format is based on
 
 ## [Unreleased]
 
+### Fixed
+
+- **`sigmoid` membership function** is now numerically stable at extreme
+  arguments: `exp` is only ever applied to non-positive values, so large inputs
+  no longer trigger an overflow `RuntimeWarning` (they saturate cleanly to 0/1).
+  Output is unchanged in the numerically safe range.
+
+### Changed
+
+- **`Mamdani` caches consequent set shapes** across inference calls. A
+  consequent term's membership over its output universe depends only on
+  `(term, universe)`, not on the inputs, so it is now memoized (keyed by the
+  membership-function identity, which auto-invalidates when a term is replaced).
+  Repeated `__call__`/`predict` runs are faster; results are identical.
+- Internal cleanup: shared implication logic between `Mamdani.__call__` and
+  `Mamdani.predict`, and a single mid-universe fallback helper across the
+  defuzzifiers.
+
 ## [0.5.0] - 2026-06-28
 
 ### Added

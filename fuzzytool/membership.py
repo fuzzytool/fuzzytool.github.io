@@ -111,7 +111,15 @@ class Sigmoid:
 
     def __call__(self, x):
         x = np.asarray(x, dtype=float)
-        return 1.0 / (1.0 + np.exp(-self.a * (x - self.c)))
+        z = self.a * (x - self.c)
+        # Numerically stable logistic: exp is only ever applied to non-positive
+        # arguments, so it never overflows (exp(+large) -> inf is avoided).
+        pos = z >= 0
+        out = np.empty_like(z)
+        out[pos] = 1.0 / (1.0 + np.exp(-z[pos]))
+        ez = np.exp(z[~pos])
+        out[~pos] = ez / (1.0 + ez)
+        return out[()] if out.ndim == 0 else out
 
     def inverse(self, y: float) -> float:
         """The ``x`` at which membership equals ``y`` (for Tsukamoto inference)."""
