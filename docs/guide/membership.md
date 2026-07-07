@@ -19,6 +19,12 @@ m(5)                       # 1.0
 m(np.array([3, 5, 7]))     # vectorized
 ```
 
+!!! note "Numerical stability"
+    `fz.sigmoid` uses an overflow-safe logistic: the exponential is only ever
+    evaluated on non-positive arguments, so even very large inputs saturate
+    cleanly to `0` or `1` without a `RuntimeWarning`. Output is unchanged within
+    the numerically safe range.
+
 ## Custom shapes
 
 Any callable works — no registration needed:
